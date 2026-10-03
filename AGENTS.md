@@ -5,7 +5,8 @@ This repo is the source of truth for the REC design system (DESIGN.md) and its g
 ## Rules
 
 - **Never hand-edit generated SVGs** (`logos/`, `illustrations/`, `sheets/`). Change `build.py` and rebuild.
-- **Tokens live in three places.** A color has to match in DESIGN.md §3 (tables), DESIGN.md §14 (Tailwind block) and the constants at the top of `build.py`. If you change one, change all three. `scripts/check.py` checks build.py against §14. It doesn't read §3, so check that table by eye.
+- **Tokens start in the DESIGN.md front matter.** That YAML block ([DESIGN.md format](https://github.com/google-labs-code/design.md), alpha) is the source of truth for colors, the type scale, radii and spacing. Copies live in §3 (tables), §14 (Tailwind block) and the constants at the top of `build.py`. Change the front matter first, then all three copies. `scripts/check.py` compares them all against it.
+- **Contrast is linted.** The front matter's `components` lists the text-on-background pairs (dark default, `-light` for Paper). Add one when you add a pair to §13.1. `check.py` runs `design.md lint` and prints any pair below AA.
 - **Bump the version for any user-visible change.** That means the header version and date in DESIGN.md, plus a row in §17 Changelog.
 - **Run `python3 scripts/check.py` before committing.** It must pass, or you must say why it doesn't (e.g. OpenDesign gets synced in the next step).
 - Copy rule: write "R.E.C." in running text, never a bare "REC". The legal name is RECIAM SAS.
@@ -14,10 +15,10 @@ This repo is the source of truth for the REC design system (DESIGN.md) and its g
 
 Use the `/brand-release` skill (`.claude/skills/brand-release/SKILL.md`), or follow the same steps by hand:
 
-1. Edit DESIGN.md and/or `build.py`, keeping the three token copies in sync.
+1. Edit DESIGN.md and/or `build.py`. For a token change, edit the front matter first, then §3, §14 and `build.py`.
 2. Rebuild: `.venv/bin/python build.py` (setup is in the README).
 3. Bump the version and add a changelog row.
-4. Run `python3 scripts/check.py`. The tokens check must pass.
+4. Run `python3 scripts/check.py`. The tokens and design.md lint checks must pass. For a token change, also run `npx @google/design.md@0.4.0 diff <(git show vX.Y.Z:DESIGN.md) DESIGN.md` against the last tag and put the token changes in the changelog row.
 5. Commit the source and the regenerated SVGs together, tag `vX.Y.Z`, then `git push --follow-tags`.
 6. **Sync OpenDesign.** The brand project is "RECIAM Design System Design System" (`brand-reciam-design-system-9c50f8`).
    - **Asset or build.py changes:** copy the changed files into the project folder at the same paths. Repo `DESIGN.md` goes to `context/input-DESIGN.md`. The folder is `~/Library/Application Support/Open Design/namespaces/release-stable/data/projects/brand-reciam-design-system-9c50f8/`. Copy with `cp`, not the MCP `write_file` tool: it needs the content inline, which is risky for big files like the 78 KB DESIGN.md. Then confirm OpenDesign sees the change with MCP `search_files`.
@@ -27,6 +28,6 @@ Use the `/brand-release` skill (`.claude/skills/brand-release/SKILL.md`), or fol
 
 **OpenDesign can get ahead of the repo.** People edit the brand inside OpenDesign too. If `check.py` reports files that exist only in OpenDesign, or a different `build.py`, pull those changes into the repo first (diff, review, rebuild, commit). Don't overwrite them.
 
-## Later: emit tokens from one source
+## Later: generate the copies
 
-Tokens are hand-kept copies for now (see above). Once that becomes painful (frequent palette changes, or a project caught running an old palette), move them into `tokens.json` and have `build.py` read it and also write `tokens.css` (the §14 Tailwind block) for projects to copy. Then `check.py`'s token check can go. Don't build this until it's needed.
+The front matter is the single source, but §3, §14 and the `build.py` constants are still hand-kept copies that `check.py` verifies. If that gets painful (frequent palette changes), have `build.py` read the front matter for its constants and generate the §3 tables. Keep writing §14 by hand: `design.md export --format css-tailwind` outputs a flat `@theme` with no dark/Paper themes, no `data-product` accents and no font fallbacks, so it can't replace §14. Don't build this until it's needed.

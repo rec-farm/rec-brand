@@ -1,6 +1,350 @@
+---
+# Machine-readable tokens in the DESIGN.md format (github.com/google-labs-code/design.md).
+# These values are the source of truth: scripts/check.py checks §3, §14 and build.py against them.
+# The format has no themes, so colors are primitives and `-light` components cover the Paper theme.
+version: alpha  # DESIGN.md format version, not the brand version (see the header below)
+name: REC Design System
+description: One design DNA for every R.E.C. product (Paramtune, StillUp). Dark by default, Paper light theme, purple for action, one signature accent per product.
+colors:
+  # Roles (dark default). The full per-theme mapping is §3.3.
+  primary: "{colors.purple-500}"
+  secondary: "{colors.cream}"
+  neutral: "{colors.ink-950}"
+  white: "#FFFFFF"
+  black: "#000000"
+  # Ink (dark neutrals)
+  ink-950: "#0A0B0C"
+  ink-900: "#101214"
+  ink-850: "#16191C"
+  ink-800: "#1D2125"
+  ink-700: "#23272B"
+  ink-600: "#3A4046"
+  ink-500: "#555C63"
+  # Paper (light neutrals)
+  paper-50: "#FFFCF5"
+  paper-100: "#F7F1E3"
+  paper-200: "#EFE8D8"
+  paper-300: "#E5DDCB"
+  paper-400: "#DDD3BF"
+  paper-500: "#CFC4AD"
+  # Text neutrals
+  cream: "#F4EFE3"
+  stone-400: "#A8A396"
+  stone-500: "#8A867E"
+  slate-600: "#4B5B61"
+  slate-500: "#5F6B67"
+  # Deep (Reciam teal-navy)
+  deep-900: "#14262E"
+  deep-800: "#1B323C"
+  deep-700: "#25424E"
+  deep-300: "#A9B8B9"
+  # REC Purple
+  purple-50: "#F2EDFF"
+  purple-100: "#E4D9FF"
+  purple-200: "#CBB6FF"
+  purple-300: "#AC8BFF"
+  purple-400: "#8E5FFF"
+  purple-500: "#7638FA"
+  purple-600: "#6524E8"
+  purple-700: "#521BC2"
+  purple-800: "#40179A"
+  purple-900: "#2C1169"
+  purple-950: "#1A0A40"
+  # Pastel signals
+  sun-100: "#FBEFC4"
+  sun-300: "#F2C641"
+  sun-400: "#E8B931"
+  sun-500: "#D9A514"
+  sun-600: "#7A5A00"
+  sun-950: "#241F10"
+  mint-100: "#D6EEE3"
+  mint-300: "#A8D8C2"
+  mint-400: "#4CC79A"
+  mint-500: "#2F8F7A"
+  mint-600: "#1C6B53"
+  mint-950: "#10221B"
+  rose-100: "#FBE3E8"
+  rose-300: "#F2C9D1"
+  rose-400: "#F07A9C"
+  rose-500: "#E8739A"
+  rose-600: "#C42F52"
+  rose-950: "#26121A"
+  lilac-100: "#EEEBF7"
+  lilac-300: "#DCD7EE"
+  lilac-400: "#B3A8EE"
+  lilac-600: "#5B4FA8"
+  lilac-950: "#1A1828"
+typography:
+  display-hero:
+    fontFamily: Figtree
+    fontSize: 4.5rem
+    fontWeight: 800
+    lineHeight: 0.95
+    letterSpacing: -0.04em
+  title-1:
+    fontFamily: Figtree
+    fontSize: 3.5rem
+    fontWeight: 800
+    lineHeight: 1
+    letterSpacing: -0.035em
+  title-2:
+    fontFamily: Figtree
+    fontSize: 1.75rem
+    fontWeight: 800
+    lineHeight: 1.15
+    letterSpacing: -0.02em
+  heading:
+    fontFamily: Figtree
+    fontSize: 1.25rem
+    fontWeight: 700
+    lineHeight: 1.25
+    letterSpacing: -0.01em
+  subheading:
+    fontFamily: Figtree
+    fontSize: 1rem
+    fontWeight: 700
+    lineHeight: 1.35
+    letterSpacing: -0.005em
+  body-lg:
+    fontFamily: Figtree
+    fontSize: 1rem
+    fontWeight: 400
+    lineHeight: 1.55
+  body:
+    fontFamily: Figtree
+    fontSize: 0.875rem
+    fontWeight: 400
+    lineHeight: 1.5
+  body-sm:
+    fontFamily: Figtree
+    fontSize: 0.8125rem
+    fontWeight: 400
+    lineHeight: 1.45
+  caption:
+    fontFamily: Figtree
+    fontSize: 0.75rem
+    fontWeight: 500
+    lineHeight: 1.4
+  stat-xl:
+    fontFamily: Archivo
+    fontSize: 4rem
+    fontWeight: 800
+    lineHeight: 1
+    fontVariation: "'wdth' 125"
+  stat:
+    fontFamily: Archivo
+    fontSize: 2.5rem
+    fontWeight: 800
+    lineHeight: 1
+    fontVariation: "'wdth' 125"
+  stat-sm:
+    fontFamily: Archivo
+    fontSize: 1.5rem
+    fontWeight: 800
+    lineHeight: 1
+    fontVariation: "'wdth' 125"
+  wordmark:
+    fontFamily: Archivo
+    fontSize: 1.125rem
+    fontWeight: 700
+    lineHeight: 1
+    letterSpacing: 0.18em
+    fontVariation: "'wdth' 125"
+  eyebrow:
+    fontFamily: Archivo
+    fontSize: 0.6875rem
+    fontWeight: 700
+    lineHeight: 1.2
+    letterSpacing: 0.14em
+    fontVariation: "'wdth' 125"
+  label:
+    fontFamily: Archivo
+    fontSize: 0.6875rem
+    fontWeight: 700
+    lineHeight: 1.2
+    letterSpacing: 0.1em
+    fontVariation: "'wdth' 125"
+  mono:
+    fontFamily: Geist Mono
+    fontSize: 0.8125rem
+    fontWeight: 400
+    lineHeight: 1.5
+  mono-sm:
+    fontFamily: Geist Mono
+    fontSize: 0.75rem
+    fontWeight: 400
+    lineHeight: 1.45
+  code:
+    fontFamily: Geist Mono
+    fontSize: 0.8125rem
+    fontWeight: 400
+    lineHeight: 1.6
+rounded:
+  none: 0px
+  xs: 2px
+  sm: 4px
+  md: 6px
+  full: 9999px
+spacing:
+  # Keys are the §5.1 tokens; "0.5" and "1.5" are written 0-5 and 1-5 so they export as CSS names.
+  "0-5": 2px
+  "1": 4px
+  "1-5": 6px
+  "2": 8px
+  "3": 12px
+  "4": 16px
+  "5": 20px
+  "6": 24px
+  "8": 32px
+  "10": 40px
+  "12": 48px
+  "16": 64px
+  "24": 96px
+components:
+  # Dark theme is the default; `-light` entries are the Paper theme (§3.3).
+  button-primary:
+    backgroundColor: "{colors.purple-500}"
+    textColor: "{colors.white}"
+    typography: "{typography.body}"
+    rounded: "{rounded.sm}"
+    height: "36px"
+    padding: "14px"
+  button-primary-hover:
+    backgroundColor: "{colors.purple-400}"
+    textColor: "{colors.white}"
+  button-primary-light:
+    backgroundColor: "{colors.purple-600}"
+    textColor: "{colors.white}"
+    typography: "{typography.body}"
+    rounded: "{rounded.sm}"
+    height: "36px"
+    padding: "14px"
+  button-primary-hover-light:
+    backgroundColor: "{colors.purple-700}"
+    textColor: "{colors.white}"
+  button-danger:
+    backgroundColor: "#D93F5E"
+    textColor: "{colors.white}"
+    typography: "{typography.body}"
+    rounded: "{rounded.sm}"
+    height: "36px"
+    padding: "14px"
+  button-danger-light:
+    backgroundColor: "{colors.rose-600}"
+    textColor: "{colors.white}"
+    typography: "{typography.body}"
+    rounded: "{rounded.sm}"
+    height: "36px"
+    padding: "14px"
+  page:
+    backgroundColor: "{colors.ink-950}"
+    textColor: "{colors.cream}"
+    typography: "{typography.body}"
+  page-light:
+    backgroundColor: "{colors.paper-100}"
+    textColor: "{colors.deep-900}"
+    typography: "{typography.body}"
+  text-muted:
+    backgroundColor: "{colors.ink-950}"
+    textColor: "{colors.stone-400}"
+  text-muted-light:
+    backgroundColor: "{colors.paper-100}"
+    textColor: "{colors.slate-600}"
+  text-subtle:
+    backgroundColor: "{colors.ink-850}"
+    textColor: "{colors.stone-500}"
+  text-subtle-light:
+    backgroundColor: "{colors.paper-200}"
+    textColor: "{colors.slate-500}"
+  link:
+    backgroundColor: "{colors.ink-900}"
+    textColor: "{colors.purple-300}"
+  link-light:
+    backgroundColor: "{colors.paper-100}"
+    textColor: "{colors.purple-600}"
+  error-text-light:
+    backgroundColor: "{colors.paper-100}"
+    textColor: "{colors.rose-600}"
+  error-text:
+    backgroundColor: "{colors.ink-950}"
+    textColor: "{colors.rose-400}"
+  success-text-light:
+    backgroundColor: "{colors.paper-100}"
+    textColor: "{colors.mint-600}"
+  warning-text-light:
+    backgroundColor: "{colors.paper-100}"
+    textColor: "{colors.sun-600}"
+  sidebar-light:
+    backgroundColor: "{colors.deep-900}"
+    textColor: "{colors.cream}"
+  sidebar-muted-light:
+    backgroundColor: "{colors.deep-900}"
+    textColor: "{colors.deep-300}"
+  tile-mint:
+    backgroundColor: "{colors.mint-950}"
+    textColor: "{colors.cream}"
+    typography: "{typography.stat}"
+    rounded: "{rounded.none}"
+  tile-mint-light:
+    backgroundColor: "{colors.mint-300}"
+    textColor: "{colors.deep-900}"
+    typography: "{typography.stat}"
+    rounded: "{rounded.none}"
+  tile-sun:
+    backgroundColor: "{colors.sun-950}"
+    textColor: "{colors.cream}"
+    typography: "{typography.stat}"
+    rounded: "{rounded.none}"
+  tile-sun-light:
+    backgroundColor: "{colors.sun-300}"
+    textColor: "{colors.deep-900}"
+    typography: "{typography.stat}"
+    rounded: "{rounded.none}"
+  tile-rose:
+    backgroundColor: "{colors.rose-950}"
+    textColor: "{colors.cream}"
+    typography: "{typography.stat}"
+    rounded: "{rounded.none}"
+  tile-rose-light:
+    backgroundColor: "{colors.rose-300}"
+    textColor: "{colors.deep-900}"
+    typography: "{typography.stat}"
+    rounded: "{rounded.none}"
+  tile-lilac:
+    backgroundColor: "{colors.lilac-950}"
+    textColor: "{colors.cream}"
+    typography: "{typography.stat}"
+    rounded: "{rounded.none}"
+  tile-lilac-light:
+    backgroundColor: "{colors.lilac-300}"
+    textColor: "{colors.deep-900}"
+    typography: "{typography.stat}"
+    rounded: "{rounded.none}"
+  nav-active-paramtune:
+    backgroundColor: "{colors.mint-400}"
+    textColor: "{colors.ink-950}"
+    rounded: "{rounded.sm}"
+    height: "40px"
+  nav-active-paramtune-light:
+    backgroundColor: "{colors.mint-300}"
+    textColor: "{colors.deep-900}"
+    rounded: "{rounded.sm}"
+    height: "40px"
+  nav-active-stillup:
+    backgroundColor: "{colors.sun-400}"
+    textColor: "{colors.ink-950}"
+    rounded: "{rounded.sm}"
+    height: "40px"
+  nav-active-stillup-light:
+    backgroundColor: "{colors.sun-300}"
+    textColor: "{colors.deep-900}"
+    rounded: "{rounded.sm}"
+    height: "40px"
+---
+
 # REC Design System
 
-> **Version** 1.3.0 · **Owner** RECIAM SAS · **Last updated** 2026-10-03
+> **Version** 1.4.0 · **Owner** RECIAM SAS · **Last updated** 2026-10-03
 > One design DNA for every REC product: **Paramtune**, **StillUp**, and whatever comes next.
 
 ---
@@ -271,7 +615,7 @@ Each hue has a **light tile**, a **solid** (icons, dots, strong accents) and a *
 | **Rose** | `#FBE3E8` | `#F2C9D1` | `#F07A9C` | `#C42F52` | `#26121A` | Failing, error, destructive |
 | **Lilac** | `#EEEBF7` | `#DCD7EE` | `#B3A8EE` | `#5B4FA8` | `#1A1828` | Pending, awaiting data, info, neutral-in-progress |
 
-Illustration-only extras: `rose-500 #E8739A` (hot pink panel), `teal-500 #2F8F7A` (pulse line), `sun-500 #D9A514`.
+Illustration-only extras: `rose-500 #E8739A` (hot pink panel), `mint-500 #2F8F7A` (teal pulse line), `sun-500 #D9A514`.
 
 ### 3.3 Semantic tokens
 
@@ -937,7 +1281,7 @@ Target: **WCAG 2.2 AA** in both themes.
 | `#FFF` on `rose-600` (danger button) | 5.42 |
 | `rose-600` on `paper-100` (light error text) | 4.81 |
 
-**Known limits:** `purple-400` (`#8E5FFF`) with white text is 4.0:1, so it's for hover backgrounds on large or bold labels only. Hairline borders (`ink-700`, `paper-400`) are decorative. Inputs use `border-input`, and focus states never rely on the border alone.
+**Known limits:** `purple-400` (`#8E5FFF`) with white text is 4.0:1, so it's for hover backgrounds on large or bold labels only. The dark `danger-solid` (`#D93F5E`) with white text is 4.35:1, which is also below AA for 14px labels. It needs a fix (see §17 v1.4.0). Hairline borders (`ink-700`, `paper-400`) are decorative. Inputs use `border-input`, and focus states never rely on the border alone.
 
 ### 13.2 Rules
 
@@ -1390,6 +1734,7 @@ Run this before shipping any screen:
 
 | Version | Date | Notes |
 |---------|------|-------|
+| 1.4.0 | 2026-10-03 | Machine-readable tokens: YAML front matter in Google's [DESIGN.md format](https://github.com/google-labs-code/design.md) (colors, type scale, radii, spacing, and component color pairs for both themes). The front matter is now the source of truth, and `scripts/check.py` checks §3, §14 and `build.py` against it and runs `design.md lint` for contrast. Fixed: §3 called `mint-500` "teal-500". Flagged: the dark `danger-solid` button is 4.35:1 (§13), still to fix. |
 | 1.3.0 | 2026-10-03 | Dark-theme StillUp illustrations: `header-stillup-dark` and `empty-state-stillup-dark` (one Sun accent, ink panels on a dot grid, cream line art). Illustration sheet extended. |
 | 1.2.0 | 2026-10-02 | Master brand renamed RECIAM → **REC** (the founder's initials; legal name stays RECIAM SAS). The eye mark is retired and replaced by the **REC chain**: Archivo Expanded 800 with the E behind R and C, 10% overlap and 8.5% cut. The "by REC" line now sits 9 below the wordmark baseline. Draft REC micro mark. Copy rule: write R.E.C. in running text. Assets renamed `reciam-*` → `rec-*`. |
 | 1.1.0 | 2026-10-01 | Logo system: shared 48u mark grid (Lens / Pupil-Gauge / Spark), StillUp and Paramtune marks redrawn into one family, micro marks, lockups, app icons, colorways, misuse, new-product logo recipe. Illustration examples and recipe. All assets generated by `build.py`. |
