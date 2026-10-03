@@ -16,7 +16,7 @@ python3 -m venv .venv && .venv/bin/pip install fonttools
 .venv/bin/python build.py
 ```
 
-Commit the regenerated SVGs together with the change that produced them.
+Commit the regenerated SVGs together with the change that produced them. Before committing, run `python3 scripts/check.py` (token consistency + OpenDesign sync). The full release steps are in [AGENTS.md](AGENTS.md).
 
 ## Using it in a project
 
