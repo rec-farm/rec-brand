@@ -449,25 +449,22 @@ def illo(rel, content):
 
 def build_illustration_sheet():
     """Each illustration on the surface it is designed for."""
-    W, H = 1200, 820
-    cells = {
-        "header-stillup-light": (0, 0, PAPER_100), "header-paramtune-dark": (600, 0, INK_950),
-        "empty-state-stillup-light": (0, 360, PAPER_50), "empty-state-paramtune-dark": (600, 360, INK_900),
-        "motif-kit": (0, 620, PAPER_100),
+    cells = {  # key: x, y, w, h, surface
+        "header-stillup-light": (0, 0, 600, 360, PAPER_100), "header-paramtune-dark": (600, 0, 600, 360, INK_950),
+        "empty-state-stillup-light": (0, 360, 600, 260, PAPER_50), "empty-state-paramtune-dark": (600, 360, 600, 260, INK_900),
+        "header-stillup-dark": (0, 620, 600, 360, INK_950), "empty-state-stillup-dark": (600, 620, 600, 360, INK_900),
+        "motif-kit": (0, 980, 1200, 200, PAPER_100),
     }
     out = []
     for rel, content in ILLOS:
         key = Path(rel).stem
-        x, y, bg = cells[key]
-        w = 1200 if key == "motif-kit" else 600
-        h = 200 if key == "motif-kit" else (360 if y == 0 else 260)
+        x, y, w, h, bg = cells[key]
         out.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="{bg}"/>')
         inner = content.split(">", 1)[1].rsplit("</svg>", 1)[0]
         vb = content.split('viewBox="')[1].split('"')[0]
         iw, ih = map(float, vb.split()[2:])
         out.append(f'<svg x="{x + (w - iw) / 2}" y="{y + (h - ih) / 2}" width="{iw}" height="{ih}" viewBox="{vb}">{inner}</svg>')
-    write("sheets/illustrations.svg", svg(W, H, "".join(out), "REC illustrations"))
-
+    write("sheets/illustrations.svg", svg(1200, 1180, "".join(out), "REC illustrations"))
 
 def build_header_stillup():
     W, H = 520, 320
@@ -489,6 +486,47 @@ def build_header_stillup():
         body.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="none" stroke="{DEEP}" stroke-width="5"/>')
     g = f'<g transform="rotate(-2 260 160)">{"".join(body)}</g>'
     return illo("illustrations/header-stillup-light.svg", svg(W, H, g, "StillUp header illustration"))
+
+
+def build_header_stillup_dark():
+    """Dark sibling of the StillUp header: untilted, ink panels on a dot grid, cream line art,
+    one Sun accent on the 45° spark axis (the raised starburst), ink-600 shadow ledge."""
+    W, H = 520, 320
+    body = [f'<defs>{halftone("sdg", INK_600, 8, 1)}</defs>']
+    body.append(f'<path d="M36 74H306V60H496V282H36Z" fill="{INK_600}"/>')  # shadow ledge
+    # eye panel
+    body.append(f'<rect x="24" y="62" width="270" height="210" fill="{INK_900}"/><rect x="24" y="62" width="270" height="210" fill="url(#sdg)"/>')
+    body.append(eye_panel(159, 167, 190, CREAM, INK_950))
+    body.append(f'<rect x="24" y="62" width="270" height="210" fill="none" stroke="{CREAM}" stroke-width="3"/>')
+    # pulse panel
+    body.append(f'<rect x="294" y="152" width="190" height="120" fill="{INK_900}"/><rect x="294" y="152" width="190" height="120" fill="url(#sdg)"/>')
+    body.append(f'<path d="M312 214H346L358 189L374 241L390 179L404 225L412 214H466" fill="none" stroke="{CREAM}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>')
+    body.append(f'<rect x="294" y="152" width="190" height="120" fill="none" stroke="{CREAM}" stroke-width="3"/>')
+    # raised spark panel (up-right): the single accent
+    body.append(f'<rect x="312" y="26" width="180" height="112" fill="{INK_600}"/>')
+    body.append(f'<rect x="304" y="18" width="180" height="112" fill="{INK_950}" stroke="{CREAM}" stroke-width="3"/>')
+    body.append(starburst(394, 74, 36, 13, 8, SUN_400))
+    return illo("illustrations/header-stillup-dark.svg", svg(W, H, "".join(body), "StillUp header illustration"))
+
+
+def build_empty_stillup_dark():
+    """Dark sibling of the StillUp empty state: untilted raised chip, cream type, Sun method stamp,
+    uptime ticks keep their status meaning (mint healthy, rose failing) at -400 strength."""
+    W, H = 400, 220
+    body = [f'<defs>{halftone("sdg2", INK_700, 8, 1)}</defs>',
+            f'<rect x="40" y="10" width="320" height="200" fill="url(#sdg2)"/>',
+            f'<rect x="90" y="34" width="236" height="72" fill="{INK_600}"/>',
+            f'<rect x="82" y="26" width="236" height="72" fill="{INK_900}" stroke="{CREAM}" stroke-width="3"/>',
+            f'<rect x="100" y="50" width="40" height="24" rx="2" fill="{SUN_400}"/>',
+            MONO_600.text("GET", 13, 120, 67, fill=INK_950, anchor="middle"),
+            MONO_500.text("/health", 24, 152, 70, fill=CREAM),
+            f'<circle cx="284" cy="61" r="14" fill="{INK_950}" stroke="{CREAM}" stroke-width="3"/>',
+            f'<path d="M277 61.5l5 5 9-10" fill="none" stroke="{CREAM}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>']
+    pattern = "mmmmrmmmmmmrmmmmmmmrmmmmmmm"
+    for i, k in enumerate(pattern):
+        c = ROSE_400 if k == "r" else MINT_400
+        body.append(f'<rect x="{66 + i * 10.4:.1f}" y="136" width="6" height="30" rx="1.5" fill="{c}"/>')
+    return illo("illustrations/empty-state-stillup-dark.svg", svg(W, H, "".join(body), "Meet your first API check"))
 
 
 def build_header_paramtune():
@@ -607,5 +645,7 @@ if __name__ == "__main__":
     build_header_paramtune()
     build_empty_stillup()
     build_empty_paramtune()
+    build_header_stillup_dark()
+    build_empty_stillup_dark()
     build_motifs()
     build_illustration_sheet()
