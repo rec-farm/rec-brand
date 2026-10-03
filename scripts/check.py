@@ -20,8 +20,9 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parent.parent
-OPEN_DESIGN = (Path.home() / "Library/Application Support/Open Design/namespaces/release-stable/data"
-               / "projects/brand-reciam-design-system-9c50f8")
+OD_DATA = Path.home() / "Library/Application Support/Open Design/namespaces/release-stable/data"
+OPEN_DESIGN = OD_DATA / "projects/brand-rec-design-system-5bae95"
+OPEN_DESIGN_BRAND = OD_DATA / "brands/rec-design-system-5bae95"  # re-imports read context/input-DESIGN.md here
 ALIASES = {"DEEP": "deep-900"}  # build.py constant → token name, where they differ
 DESIGN_MD_CLI = "@google/design.md@0.4.0"  # pinned: the format is alpha
 HEX = r"#[0-9A-Fa-f]{6}"
@@ -130,10 +131,17 @@ def check_open_design():
     for folder in ("logos", "illustrations", "sheets"):
         pairs += [(str(p.relative_to(ROOT)),) * 2 for p in sorted((ROOT / folder).glob("*.svg"))]
     errors = []
+    brand_input = OPEN_DESIGN_BRAND / "context/input-DESIGN.md"
+    if not brand_input.exists():
+        errors.append(f"OpenDesign brand is missing {brand_input.relative_to(OD_DATA)}")
+    elif brand_input.read_text().strip() != (ROOT / "DESIGN.md").read_text().strip():  # OpenDesign trims it
+        errors.append(f"OpenDesign {brand_input.relative_to(OD_DATA)} differs from DESIGN.md (re-imports would use it)")
     for ours, theirs in pairs:
         other = OPEN_DESIGN / theirs
         if not other.exists():
             errors.append(f"OpenDesign is missing {theirs}")
+        elif ours == "DESIGN.md" and other.read_text().strip() == (ROOT / ours).read_text().strip():
+            continue  # OpenDesign trims it on import
         elif other.read_bytes() != (ROOT / ours).read_bytes():
             errors.append(f"OpenDesign {theirs} differs from {ours}")
     for folder in ("logos", "illustrations", "sheets"):
