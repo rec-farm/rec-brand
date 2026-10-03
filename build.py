@@ -29,6 +29,7 @@ SUN_300, SUN_400 = "#F2C641", "#E8B931"
 MINT_300, MINT_400, MINT_500 = "#A8D8C2", "#4CC79A", "#2F8F7A"
 ROSE_300, ROSE_400, ROSE_500, ROSE_600 = "#F2C9D1", "#F07A9C", "#E8739A", "#C42F52"
 LILAC_300 = "#DCD7EE"
+SKY_300, SKY_400 = "#B4DAF2", "#5DB4EA"
 
 
 # ── Outlined text ───────────────────────────────────────────────────────────
@@ -179,7 +180,52 @@ def mark_paramtune(fg):
             f'<circle cx="24" cy="24" r="12.5" fill="{fg}" mask="url(#{m})"/>')
 
 
-MARKS = {"rec": mark_rec, "stillup": mark_stillup, "paramtune": mark_paramtune}
+def _scribble(c, length, amp, periods=1.5, deg=20):
+    """A sine-wave pen stroke through c, rising at `deg`. Cubic Béziers, one per quarter period."""
+    a = math.radians(deg)
+    u, v = (math.cos(a), -math.sin(a)), (-math.sin(a), -math.cos(a))  # along the stroke, and across it
+    n = round(periods * 4)
+
+    def pt(t):
+        s, w = (t - 0.5) * length, amp * math.sin(2 * math.pi * periods * t)
+        return c[0] + s * u[0] + w * v[0], c[1] + s * u[1] + w * v[1]
+
+    def tangent(t):  # d/dt of pt, scaled for a Hermite third of one segment
+        ds, dw = length, amp * 2 * math.pi * periods * math.cos(2 * math.pi * periods * t)
+        return (ds * u[0] + dw * v[0]) / (3 * n), (ds * u[1] + dw * v[1]) / (3 * n)
+
+    x, y = pt(0)
+    d = f"M{x:.2f} {y:.2f}"
+    for i in range(n):
+        t0, t1 = i / n, (i + 1) / n
+        (x0, y0), (x1, y1) = pt(t0), pt(t1)
+        (dx0, dy0), (dx1, dy1) = tangent(t0), tangent(t1)
+        d += f"C{x0 + dx0:.2f} {y0 + dy0:.2f} {x1 - dx1:.2f} {y1 - dy1:.2f} {x1:.2f} {y1:.2f}"
+    return d
+
+
+# Rec Draw: Gauge + Scribble + Spark. The disc sits 1.5u down-left of centre on the spark axis
+# so the disc and its spark ticks centre optically on the grid (DESIGN.md §2.4).
+DRAW_C = (22.5, 25.5)
+
+
+def mark_draw(fg):
+    m = _id("m")
+    cx, cy = DRAW_C
+    ticks = ""
+    for deg in (75, 45, 15):  # the spark: three 3u ticks fanned round the 45° axis
+        x1, y1 = _polar(17.5, deg)
+        x2, y2 = _polar(21.5, deg)
+        ticks += f'<line x1="{x1 + cx - 24:.2f}" y1="{y1 + cy - 24:.2f}" x2="{x2 + cx - 24:.2f}" y2="{y2 + cy - 24:.2f}"/>'
+    return (f'<defs><mask id="{m}" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48">'
+            f'<rect width="48" height="48" fill="#fff"/>'
+            f'<path d="{_scribble(DRAW_C, 19, 3)}" fill="none" stroke="#000" stroke-width="{STROKE}" '
+            f'stroke-linecap="round" stroke-linejoin="round"/></mask></defs>'
+            f'<g stroke="{fg}" stroke-width="3" stroke-linecap="round">{ticks}</g>'
+            f'<circle cx="{cx}" cy="{cy}" r="14" fill="{fg}" mask="url(#{m})"/>')
+
+
+MARKS = {"rec": mark_rec, "stillup": mark_stillup, "paramtune": mark_paramtune, "draw": mark_draw}
 
 # Micro marks (≤ 32 px): drop fine detail, thicken knock-outs (DESIGN.md §2.6).
 PULSE_MICRO = "M2 24H14L22 12L28 35L33 24H46"
@@ -203,7 +249,16 @@ def micro_paramtune(fg):
             f'<circle cx="24" cy="24" r="20" fill="{fg}" mask="url(#{m})"/>')
 
 
-MICRO = {"rec": micro_rec, "stillup": micro_stillup, "paramtune": micro_paramtune}
+def micro_draw(fg):
+    m = _id("m")
+    return (f'<defs><mask id="{m}" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48">'
+            f'<rect width="48" height="48" fill="#fff"/>'
+            f'<path d="{_scribble((24, 24), 26, 4.2)}" fill="none" stroke="#000" stroke-width="5" '
+            f'stroke-linecap="round" stroke-linejoin="round"/></mask></defs>'
+            f'<circle cx="24" cy="24" r="20" fill="{fg}" mask="url(#{m})"/>')
+
+
+MICRO = {"rec": micro_rec, "stillup": micro_stillup, "paramtune": micro_paramtune, "draw": micro_draw}
 
 
 def place(markup, x, y, size):
@@ -230,8 +285,15 @@ def write(rel, content):
 WORDMARKS = {
     "paramtune": dict(face=ARCHIVO_X700, text="PARAMTUNE", tracking=0.18),
     "stillup":   dict(face=FIGTREE_800,  text="StillUp",   tracking=-0.02),
+    "draw":      dict(face=ARCHIVO_X700, text="REC DRAW",  tracking=0.16),
 }
 MARK, CAP, GAP = 48, 20, 12
+PRODUCTS = ("rec", "stillup", "paramtune", "draw")  # sheet order
+NAMES = {"draw": "rec draw"}  # display name in titles and sheet stamps, where it differs from the file prefix
+
+
+def display_name(name):
+    return NAMES.get(name, name)
 REC_LOCKUP_CAP = 28
 
 
@@ -267,13 +329,17 @@ def endorsed(name, fg, muted, x=0.0, y=0.0, scale=1.0):
     return f'<g transform="translate({x:.2f} {y:.2f}) scale({scale})">{body}{extra}</g>', max(w, rend), base + 2
 
 
+# Rec Draw has no endorsed lockup: its wordmark already says REC, so "REC DRAW by REC" would stutter.
+ENDORSED = ("stillup", "paramtune")
+
+
 def build_logos():
     for name, fn in MARKS.items():
         for tone, fg in (("ink", DEEP), ("cream", CREAM)):
-            write(f"logos/{name}-mark-{tone}.svg", svg(48, 48, fn(fg), f"{name} mark"))
+            write(f"logos/{name}-mark-{tone}.svg", svg(48, 48, fn(fg), f"{display_name(name)} mark"))
             body, w, h = lockup(name, fg)
-            write(f"logos/{name}-lockup-{tone}.svg", svg(math.ceil(w), h, body, f"{name} logo"))
-        if name != "rec":
+            write(f"logos/{name}-lockup-{tone}.svg", svg(math.ceil(w), h, body, f"{display_name(name)} logo"))
+        if name in ENDORSED:
             for tone, fg, muted in (("ink", DEEP, "#4B5B61"), ("cream", CREAM, STONE_400)):
                 body, w, h = endorsed(name, fg, muted)
                 write(f"logos/{name}-endorsed-{tone}.svg", svg(math.ceil(w), math.ceil(h), body, f"{name} by REC"))
@@ -284,6 +350,7 @@ ICONS = {
     "rec":       dict(tile=PURPLE_500, fg=CREAM),
     "stillup":   dict(tile=SUN_300,    fg=DEEP),
     "paramtune": dict(tile=MINT_400,   fg=DEEP),
+    "draw":      dict(tile=SKY_400,    fg=DEEP),
 }
 
 
@@ -304,10 +371,10 @@ def favicon(name):
 
 def build_icons():
     for name in MARKS:
-        write(f"logos/{name}-app-icon.svg", svg(128, 128, app_icon(name), f"{name} app icon"))
+        write(f"logos/{name}-app-icon.svg", svg(128, 128, app_icon(name), f"{display_name(name)} app icon"))
         write(f"logos/{name}-favicon.svg", favicon(name))
         for tone, fg in (("ink", DEEP), ("cream", CREAM)):
-            write(f"logos/{name}-micro-{tone}.svg", svg(48, 48, MICRO[name](fg), f"{name} micro mark"))
+            write(f"logos/{name}-micro-{tone}.svg", svg(48, 48, MICRO[name](fg), f"{display_name(name)} micro mark"))
 
 
 # ── Sheets (previews embedded in DESIGN.md) ─────────────────────────────────
@@ -316,7 +383,7 @@ def stamp(text, x, y, fill, cap=7):
 
 
 def build_logo_sheet():
-    W, H = 1200, 780
+    W, H = 1200, 876
     out = [f'<rect width="{W}" height="{H}" fill="{PAPER_100}"/>',
            f'<rect width="{W // 2}" height="{H}" fill="{INK_950}"/>']
     for col, (bg, fg, muted, label) in enumerate(((INK_950, CREAM, STONE_400, "Dark (default)"),
@@ -324,7 +391,7 @@ def build_logo_sheet():
         ox = col * 600 + 56
         out.append(stamp(label, ox, 56, muted))
         y = 96
-        for name in ("rec", "stillup", "paramtune"):
+        for name in PRODUCTS:
             body, w, h = lockup(name, fg, ox, y, 1.0)
             out.append(body)
             y += 96
@@ -332,17 +399,17 @@ def build_logo_sheet():
         out.append(body)
         body, w, h = endorsed("paramtune", fg, muted, ox, y + 100)
         out.append(body)
-        out.append(stamp("Marks · micro", ox, 624, muted))
-        for i, name in enumerate(("rec", "stillup", "paramtune")):
-            out.append(place(MARKS[name](fg), ox + i * 96, 648, 64))
-            out.append(place(MICRO[name](fg), ox + 300 + i * 48, 664, 24))
+        out.append(stamp("Marks · micro", ox, 720, muted))
+        for i, name in enumerate(PRODUCTS):
+            out.append(place(MARKS[name](fg), ox + i * 84, 744, 64))
+            out.append(place(MICRO[name](fg), ox + 352 + i * 40, 764, 24))
     out.append(f'<rect x="0" y="{H - 1}" width="{W}" height="1" fill="{INK_700}"/>')
     write("sheets/logo-sheet.svg", svg(W, H, "".join(out), "REC logo family"))
 
     # App icons + favicons sheet
-    W, H = 760, 260
+    W, H = 1000, 260
     out = [f'<rect width="{W}" height="{H}" fill="{PAPER_200}"/>', stamp("App icons · favicons", 40, 40, "#4B5B61")]
-    for i, name in enumerate(("rec", "stillup", "paramtune")):
+    for i, name in enumerate(PRODUCTS):
         x = 40 + i * 240
         out.append(app_icon(name, x, 64, 128))
         spec = ICONS[name]
@@ -351,16 +418,15 @@ def build_logo_sheet():
                    + place(MICRO[name](spec["fg"]), 3, 3, 26) + "</g>")
         out.append(f'<g transform="translate({fx} 140)"><rect width="16" height="16" rx="3" fill="{spec["tile"]}"/>'
                    + place(MICRO[name](spec["fg"]), 1.5, 1.5, 13) + "</g>")
-        out.append(stamp(name, x, 228, DEEP))
+        out.append(stamp(display_name(name), x, 228, DEEP))
     write("sheets/app-icons.svg", svg(W, H, "".join(out), "REC app icons"))
 
 
 def build_construction():
     S = 6  # 48 units × 6 = 288px per mark
-    W, H = 1080, 470
+    W, H = 1416, 470
     out = [f'<rect width="{W}" height="{H}" fill="{PAPER_50}"/>']
-    sx, sy, _ = SPARK
-    for i, name in enumerate(("rec", "stillup", "paramtune")):
+    for i, name in enumerate(PRODUCTS):
         ox, oy = 48 + i * 336, 64
         g = [f'<rect width="48" height="48" fill="{PAPER_100}"/>']
         for k in range(0, 49, 4):  # 4-unit grid
@@ -383,7 +449,15 @@ def build_construction():
                 g.append(f'<rect x="{ox:.2f}" y="{top:.2f}" width="{cap * REC_OVERLAP:.2f}" height="{cap:.2f}" '
                          f'fill="{MINT_500}" fill-opacity="0.35"/>')
                 x = ox
+        elif name == "draw":  # the offset disc, its spark axis and the tick ring
+            cx, cy = DRAW_C
+            g.append(f'<circle cx="{cx}" cy="{cy}" r="14" fill="none" stroke="{PURPLE_500}" stroke-width="0.25"/>')
+            g.append(f'<circle cx="24" cy="24" r="12.5" fill="none" stroke="{PURPLE_500}" stroke-width="0.25" stroke-dasharray="1 0.6"/>')
+            x2, y2 = _polar(30, 45)
+            g.append(f'<path d="M{cx} {cy}L{x2 + cx - 24:.2f} {y2 + cy - 24:.2f}" stroke="{MINT_500}" stroke-width="0.35" stroke-dasharray="1 0.6"/>')
+            g.append(f'<circle cx="24" cy="24" r="0.8" fill="{MINT_500}"/><circle cx="{cx}" cy="{cy}" r="0.8" fill="{MINT_500}"/>')
         else:  # lens / pupil / gauge keylines and the spark axis
+            sx, sy, _ = SPARK
             g.append(f'<path d="{LENS}" fill="none" stroke="{PURPLE_500}" stroke-width="0.25"/>')
             g.append(f'<circle cx="24" cy="24" r="{PUPIL_R}" fill="none" stroke="{PURPLE_500}" stroke-width="0.25"/>')
             g.append(f'<circle cx="24" cy="24" r="12.5" fill="none" stroke="{PURPLE_500}" stroke-width="0.25" stroke-dasharray="1 0.6"/>')
@@ -391,7 +465,7 @@ def build_construction():
             g.append(f'<path d="M24 24L{x2:.2f} {y2:.2f}" stroke="{MINT_500}" stroke-width="0.35" stroke-dasharray="1 0.6"/>')
             g.append(f'<circle cx="{sx}" cy="{sy}" r="0.8" fill="{MINT_500}"/>')
         out.append(f'<g transform="translate({ox} {oy}) scale({S})">{"".join(g)}</g>')
-        out.append(stamp(name, ox, 40, DEEP, 8))
+        out.append(stamp(display_name(name), ox, 40, DEEP, 8))
     leg = [("Keylines (cap · lens · gauge)", PURPLE_500), ("Spark axis · overlap", MINT_500), ("Safe area (2u)", ROSE_400)]
     for j, (txt, c) in enumerate(leg):
         lx = 48 + j * 300
@@ -596,7 +670,7 @@ def build_empty_paramtune():
 
 
 def build_motifs():
-    W, H = 840, 190
+    W, H = 956, 190
     out = [f'<rect width="{W}" height="{H}" fill="{PAPER_100}"/>']
     T = 96
     motifs = []
@@ -627,6 +701,13 @@ def build_motifs():
     # 7 terminal
     motifs.append(("Prompt", f'<path d="M22 36L38 50L22 64" fill="none" stroke="{DEEP}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'
                              f'<path d="M46 66H72" stroke="{PURPLE_500}" stroke-width="5" stroke-linecap="round"/>'))
+    # 8 scribble (Rec Draw): a pen stroke rising toward the spark, Sky dot where the pen lifts
+    ex, ey = 40 + 22 * math.cos(math.radians(20)), 58 - 22 * math.sin(math.radians(20))  # where the pen lifts
+    sparks = "".join(f'<line x1="{ex + x1:.1f}" y1="{ey + y1:.1f}" x2="{ex + x2:.1f}" y2="{ey + y2:.1f}"/>'
+                     for x1, y1, x2, y2 in (_polar(11, a, 0) + _polar(18, a, 0) for a in (75, 45, 15)))
+    motifs.append(("Scribble", f'<path d="{_scribble((40, 58), 44, 7)}" fill="none" stroke="{DEEP}" stroke-width="5" stroke-linecap="round"/>'
+                               f'<g stroke="{DEEP}" stroke-width="3.5" stroke-linecap="round">{sparks}</g>'
+                               f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="5" fill="{SKY_400}" stroke="{DEEP}" stroke-width="2.5"/>'))
     for i, (label, art) in enumerate(motifs):
         x = 24 + i * 116
         out.append(f'<rect x="{x + 5}" y="29" width="{T}" height="{T}" fill="{DEEP}"/>')
