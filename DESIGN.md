@@ -223,7 +223,7 @@ components:
     backgroundColor: "{colors.purple-700}"
     textColor: "{colors.white}"
   button-danger:
-    backgroundColor: "#D93F5E"
+    backgroundColor: "#D23758"
     textColor: "{colors.white}"
     typography: "{typography.body}"
     rounded: "{rounded.sm}"
@@ -344,7 +344,7 @@ components:
 
 # REC Design System
 
-> **Version** 1.4.0 · **Owner** RECIAM SAS · **Last updated** 2026-10-03
+> **Version** 1.4.1 · **Owner** RECIAM SAS · **Last updated** 2026-10-03
 > One design DNA for every REC product: **Paramtune**, **StillUp**, and whatever comes next.
 
 ---
@@ -645,7 +645,7 @@ Illustration-only extras: `rose-500 #E8739A` (hot pink panel), `mint-500 #2F8F7A
 | `warning-tile` / `-fg` / `-icon` | `sun-950` / `cream` / `sun-400` | `sun-300` / `deep-900` / `deep-900` |
 | `danger-tile` / `-fg` / `-icon` | `rose-950` / `cream` / `rose-400` | `rose-300` / `deep-900` / `deep-900` |
 | `info-tile` / `-fg` / `-icon` | `lilac-950` / `cream` / `lilac-400` | `lilac-300` / `deep-900` / `deep-900` |
-| `danger-solid` (destructive buttons) | `#D93F5E` | `rose-600` `#C42F52` |
+| `danger-solid` (destructive buttons) | `#D23758` | `rose-600` `#C42F52` |
 | `danger-text` (inline errors) | `rose-400` `#F07A9C` | `rose-600` `#C42F52` |
 | `success-text` | `mint-400` | `mint-600` `#1C6B53` |
 | `warning-text` | `sun-400` | `sun-600` `#7A5A00` |
@@ -1278,10 +1278,11 @@ Target: **WCAG 2.2 AA** in both themes.
 | `stone-400` on `sun-950` / `mint-950` / `rose-950` (dark tile captions) | 6.53 / 6.59 / 7.05 |
 | `cream` on `deep-900` (light sidebar) | 13.59 |
 | `deep-300` on `deep-900` (light sidebar muted) | 7.61 |
-| `#FFF` on `rose-600` (danger button) | 5.42 |
+| `#FFF` on `danger-solid` `#D23758` (dark danger button) | 4.74 |
+| `#FFF` on `rose-600` (light danger button) | 5.42 |
 | `rose-600` on `paper-100` (light error text) | 4.81 |
 
-**Known limits:** `purple-400` (`#8E5FFF`) with white text is 4.0:1, so it's for hover backgrounds on large or bold labels only. The dark `danger-solid` (`#D93F5E`) with white text is 4.35:1, which is also below AA for 14px labels. It needs a fix (see §17 v1.4.0). Hairline borders (`ink-700`, `paper-400`) are decorative. Inputs use `border-input`, and focus states never rely on the border alone.
+**Known limits:** `purple-400` (`#8E5FFF`) with white text is 4.0:1, so it's for hover backgrounds on large or bold labels only. Hairline borders (`ink-700`, `paper-400`) are decorative. Inputs use `border-input`, and focus states never rely on the border alone.
 
 ### 13.2 Rules
 
@@ -1461,7 +1462,7 @@ Paste this into your global CSS (e.g. `app/globals.css`). Dark is the default (`
   --info-tile:    var(--color-lilac-950); --info-icon:    var(--color-lilac-400); --info-text:    var(--color-lilac-400);
   --tile-fg: var(--color-cream);
   --tile-fg-muted: var(--color-stone-400);
-  --danger-solid: #D93F5E;
+  --danger-solid: #D23758;
 
   --overlay: rgb(10 11 12 / 0.72);
   --shadow-pop-value: 0 12px 32px -8px rgb(0 0 0 / 0.45);
@@ -1734,6 +1735,7 @@ Run this before shipping any screen:
 
 | Version | Date | Notes |
 |---------|------|-------|
+| 1.4.1 | 2026-10-03 | Fix: dark `danger-solid` `#D93F5E` → `#D23758`, so white text on the destructive button is 4.74:1 (was 4.35:1, below AA). Light theme unchanged (`rose-600`). |
 | 1.4.0 | 2026-10-03 | Machine-readable tokens: YAML front matter in Google's [DESIGN.md format](https://github.com/google-labs-code/design.md) (colors, type scale, radii, spacing, and component color pairs for both themes). The front matter is now the source of truth, and `scripts/check.py` checks §3, §14 and `build.py` against it and runs `design.md lint` for contrast. Fixed: §3 called `mint-500` "teal-500". Flagged: the dark `danger-solid` button is 4.35:1 (§13), still to fix. |
 | 1.3.0 | 2026-10-03 | Dark-theme StillUp illustrations: `header-stillup-dark` and `empty-state-stillup-dark` (one Sun accent, ink panels on a dot grid, cream line art). Illustration sheet extended. |
 | 1.2.0 | 2026-10-02 | Master brand renamed RECIAM → **REC** (the founder's initials; legal name stays RECIAM SAS). The eye mark is retired and replaced by the **REC chain**: Archivo Expanded 800 with the E behind R and C, 10% overlap and 8.5% cut. The "by REC" line now sits 9 below the wordmark baseline. Draft REC micro mark. Copy rule: write R.E.C. in running text. Assets renamed `reciam-*` → `rec-*`. |
