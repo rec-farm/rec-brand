@@ -20,7 +20,7 @@ Use the `/brand-release` skill (`.claude/skills/brand-release/SKILL.md`), or fol
 4. Run `python3 scripts/check.py`. The tokens check must pass.
 5. Commit the source and the regenerated SVGs together, tag `vX.Y.Z`, then `git push --follow-tags`.
 6. **Sync OpenDesign.** The brand project is "RECIAM Design System Design System" (`brand-reciam-design-system-9c50f8`).
-   - **Asset or build.py changes:** write the changed files into the project with the OpenDesign MCP `write_file` tool, at the same paths. Repo `DESIGN.md` goes to `context/input-DESIGN.md`.
+   - **Asset or build.py changes:** copy the changed files into the project folder at the same paths. Repo `DESIGN.md` goes to `context/input-DESIGN.md`. The folder is `~/Library/Application Support/Open Design/namespaces/release-stable/data/projects/brand-reciam-design-system-9c50f8/`. Copy with `cp`, not the MCP `write_file` tool: it needs the content inline, which is risky for big files like the 78 KB DESIGN.md. Then confirm OpenDesign sees the change with MCP `search_files`.
    - **Rule changes** (palette, type, logo rules, voice): OpenDesign also keeps derived copies (its own DESIGN.md, `brand.json`, generated tokens, brand memory rules). Re-import the brand in the OpenDesign app so it regenerates them, then rerun the check.
    - Rerun `scripts/check.py` until OpenDesign shows ✓.
 7. Tell the user which downstream projects should pick up the new version: Paramtune, StillUp, and any other project whose `CLAUDE.md` points at this DESIGN.md.
