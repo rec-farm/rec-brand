@@ -388,7 +388,7 @@ components:
 
 # REC Design System
 
-> **Version** 1.5.0 · **Owner** RECIAM SAS · **Last updated** 2026-10-03
+> **Version** 1.6.0 · **Owner** RECIAM SAS · **Last updated** 2026-10-04
 > One design DNA for every REC product: **Paramtune**, **StillUp**, **Handstamp**, **Rec Draw**, and whatever comes next.
 
 ---
@@ -1267,8 +1267,72 @@ This is the hero component of both parent brands.
 
 ### 11.5 Marketing and docs
 
-- Use the 16px base, `display-hero` headlines with the purple period, and dot-grid hero backgrounds.
-- The docs nav reuses the sidebar spec. Code blocks follow §10.18.
+Landing pages and documentation are two R.E.C. page patterns. **Paramtune's landing page** and **StillUp's handbook** are the reference implementations. Use their structure with the current tokens and components in this document; product copy, screenshots and setup instructions belong to each product.
+
+**Shared requirements:** use the 16px reading base, Figtree for prose and headings, Archivo Expanded for short labels, and Geist Mono for code and identifiers. Support Dark and Paper with semantic tokens. Purple identifies primary actions; the product accent identifies navigation and decorative details. Keep the existing border, radius, focus and shadow rules. These patterns introduce no new tokens.
+
+The dimensions below are layout guidance, not additions to the token scale. They specialize the app shell in §5.3: public pages do not need workspace controls or the dashboard's stat-first hierarchy.
+
+#### 11.5.1 Landing page — Paramtune pattern
+
+**Recommended structure, in order:**
+
+| Section | Purpose and content |
+|---------|---------------------|
+| Header | Product lockup, a few useful navigation links, and a clear route into the product. Keep secondary destinations visually quiet. |
+| Hero | Short eyebrow, one outcome-led H1 with the purple period, a concise explanation, one primary CTA and an optional secondary link. Use the dot grid here. |
+| Product preview | Show the actual workflow in a framed screenshot or representative UI preview, with an accessible description. Label sample data or a demo when it could be mistaken for a live product. |
+| Quickstart | Give visitors the shortest useful path to trying the product: a small set of steps, a command or a link to setup. State prerequisites beside the instructions. |
+| Audience | Optional: explain who benefits through concrete jobs or use cases. |
+| Features | A small grid of capabilities, each with a short title and a practical benefit. |
+| Differentiation | Optional: explain relevant choices such as hosting or ownership. Keep comparisons specific and verifiable. |
+| Closing action | Repeat the main next step after the supporting detail. |
+| Footer | Product identity and useful documentation, source, support or legal links. |
+
+**Layout and hierarchy:**
+
+- Center content in a container up to 1280px wide, with 16px side padding on mobile and 24px from 768px. Align hero copy, section headings and grids to the same edge.
+- Use 64px vertical section padding as the desktop baseline; the hero may grow to 96px from 768px. Reduce ordinary sections to 40–48px on small screens when needed. Separate major sections with a 1px `border` rule.
+- Use `display-hero` for the landing H1: 72px on desktop, stepping down to approximately 56px and 44px as space narrows. Keep it around 14–18 characters wide, with supporting copy no wider than 60ch. Let copy wrap naturally; avoid line breaks that only work at one width.
+- Use `title-2` for major section headings and the existing card title/body styles inside grids. Feature and audience grids use three columns when content fits, with 16–24px gaps; collapse to one column on narrow screens.
+- Keep previews contained. On mobile, use a legible crop, a simplified preview or an explicitly scrollable region rather than shrinking a full desktop interface into unreadable text.
+- Use one primary action per decision point. The closing CTA may repeat the hero destination farther down the page; avoid competing primary buttons in the same viewport.
+
+**Product-specific choices:** section count, screenshots, audience, hosting claims and CTA wording. A hosted product may use an onboarding CTA instead of a command-based quickstart. Include pricing, FAQs or testimonials only when they answer real questions and the content exists; they are not required template filler.
+
+**Reference source:** Paramtune `src/client/pages/Home.tsx`, with `NavHeader`, `MockDashboard`, `QuickStart` and `Footer`. The section order is the reference; implementation-specific classes are not shared tokens.
+
+#### 11.5.2 Documentation — StillUp pattern
+
+**Recommended shell:** a dedicated header with the product lockup, a documentation label and a secondary link back to the product; a searchable, grouped left navigation; and a main reading area. Reuse §10.3 navigation styling and §10.18 code blocks. Documentation must remain useful when reached directly through a guide URL.
+
+| Surface | Required content and hierarchy |
+|---------|--------------------------------|
+| Handbook overview | A welcoming `title-1` heading, short description, prominent starting paths and a browsable guide index. A brand illustration is optional. |
+| Guide header | Breadcrumb, one descriptive H1 and a short explanation of what the reader will accomplish. Category or reading-time metadata is optional. |
+| Guide body | Prerequisites where needed, ordered steps for procedures, descriptive H2/H3 sections, examples and the expected result. Put warnings beside the affected step. |
+| On this page | Anchor links for longer articles, in article order. Omit for short pages. |
+| Guide ending | A relevant next guide or related task. Avoid automatically wrapping the final guide back to the first. |
+
+**Layout and reading hierarchy:**
+
+- Cap the outer docs shell at 1600px. Start with the 256px sidebar from §5.3; keep the main grid child at `min-width: 0` so long code cannot widen the page.
+- Use 48px desktop content padding, reducing to 24–32px on intermediate widths and 16px on mobile. Cap the article column around 760px and long prose around 65–75ch.
+- On wide screens, place an approximately 200px “On this page” rail beside the article with a 48px gap. Move it above the article when the reading column would become cramped (StillUp uses 1200px); preserve the links on mobile.
+- Use `title-1` for a docs overview. Article titles use a quieter 28–40px Figtree heading with comfortable wrapping; reserve `display-hero` for landing pages. Follow the existing purple-period rule, with identifiers left untouched. Body copy uses `body-lg`; code uses `code`.
+- Keep dot grids and large illustrations in the overview or cover area. Article backgrounds stay quiet, with restrained callouts and no decorative shadows on ordinary prose sections.
+
+**Navigation and responsive behavior:**
+
+- Group guides by reader task, such as “Start here”, “Guides” and “Reference”. Mark the current page with `aria-current="page"`; do not rely on accent color alone.
+- Search must have a visible label, useful page titles and descriptions in results, a clear reset action and a helpful no-results state. Search headings and relevant content as well as titles. Any advertised keyboard shortcut must work.
+- Keep desktop navigation sticky only when it can scroll independently without hiding links. On mobile, use a compact in-flow navigation like StillUp's small handbook, or the accessible drawer pattern in §5.4 for larger guide sets. Preserve search and every destination; do not use an icon-only docs rail.
+- Provide a skip link to the main content. Keep heading anchors stable, give in-page targets enough scroll offset for any sticky header, and ensure keyboard focus is never obscured.
+- Code blocks and wide reference tables may scroll within their own labeled regions; the page itself must not overflow horizontally. Copy buttons need an accessible name and success/failure feedback. Examples must state placeholders and prerequisites and must not contain real credentials.
+
+**Product-specific choices:** guide categories, starting paths, reference formats and navigation density. StillUp's dashboard and repository starting paths illustrate two real workflows; another product should use its own onboarding tasks. Keep commands, API examples and availability statements aligned with the shipped product.
+
+**Reference source:** StillUp `apps/web/app/docs/` (shell, overview, guide and stylesheet), `apps/web/components/docs-*.tsx` and `apps/web/lib/docs.ts`. Use these to understand the pattern; the current brand specification governs tokens and the guidance above governs new implementations.
 
 ---
 
@@ -1817,6 +1881,8 @@ Run this before shipping any screen:
 - [ ] Empty, loading and error states are designed, with copy that follows §12.
 - [ ] The layout holds at 375px, 768px, 1280px and 1536px.
 - [ ] `prefers-reduced-motion` is respected.
+- [ ] Landing pages follow §11.5.1: clear next step, legible product preview and useful section order without filler.
+- [ ] Documentation follows §11.5.2: readable articles, working search and anchors, complete mobile navigation, and contained code/table overflow.
 
 ---
 
@@ -1824,6 +1890,7 @@ Run this before shipping any screen:
 
 | Version | Date | Notes |
 |---------|------|-------|
+| 1.6.0 | 2026-10-04 | Expanded §11.5 with canonical landing-page guidance based on Paramtune and documentation guidance based on StillUp: shared requirements, section structures, layout dimensions, responsive behavior, reading hierarchy, navigation, accessibility and product-specific choices. Extended the review checklist. No token or generated asset changes. |
 | 1.5.0 | 2026-10-03 | New product brand **Rec Draw** (private whiteboard): Gauge + Scribble + Spark mark (disc r 14, offset 1.5u down-left on the spark axis; scribble knock-out; three spark ticks round 45°), micro mark, `REC DRAW` wordmark (Archivo Expanded 700, `0.16em`), lockups, app icon and favicon (`logos/draw-*`); no endorsed lockup. New pastel **Sky** (`sky-100` `#E2F0FA`, `sky-300` `#B4DAF2`, `sky-400` `#5DB4EA`, `sky-600` `#1E5F8C`, `sky-950` `#0E1C25`) as Rec Draw's accent, with no status meaning; contrast pairs in §13.1 and the front matter. **Lilac** registered as **Handstamp**'s accent (it was listed as free). `data-product="handstamp"` and `"draw"` accent blocks in §14. Scribble added to the motif kit. Sheets extended. |
 | 1.4.1 | 2026-10-03 | Fix: dark `danger-solid` `#D93F5E` → `#D23758`, so white text on the destructive button is 4.74:1 (was 4.35:1, below AA). Light theme unchanged (`rose-600`). |
 | 1.4.0 | 2026-10-03 | Machine-readable tokens: YAML front matter in Google's [DESIGN.md format](https://github.com/google-labs-code/design.md) (colors, type scale, radii, spacing, and component color pairs for both themes). The front matter is now the source of truth, and `scripts/check.py` checks §3, §14 and `build.py` against it and runs `design.md lint` for contrast. Fixed: §3 called `mint-500` "teal-500". Flagged: the dark `danger-solid` button is 4.35:1 (§13), still to fix. |
