@@ -388,7 +388,7 @@ components:
 
 # REC Design System
 
-> **Version** 1.6.0 · **Owner** RECIAM SAS · **Last updated** 2026-10-04
+> **Version** 1.7.0 · **Owner** RECIAM SAS · **Last updated** 2026-10-10
 > One design DNA for every REC product: **Paramtune**, **StillUp**, **Handstamp**, **Rec Draw**, and whatever comes next.
 
 ---
@@ -437,7 +437,7 @@ REC combines two parents. **Paramtune** contributes precision: black canvas, mon
 REC  (master brand of RECIAM SAS · chain monogram · purple)
 ├── Paramtune   — config & schema management      · signature: Mint
 ├── StillUp     — API uptime & health checks      · signature: Sun
-├── Handstamp   — passwordless OpenID Connect     · signature: Lilac (accent only; no mark yet)
+├── Handstamp   — passwordless OpenID Connect     · signature: Lilac
 ├── Rec Draw    — private whiteboard & sketching  · signature: Sky
 └── <future>    — Rose is the only pastel left, and it reads as failure: add a new hue (§2.10 step 9)
 ```
@@ -455,7 +455,7 @@ REC  (master brand of RECIAM SAS · chain monogram · purple)
 |---------|----------|------------------|----------|
 | Paramtune | `PARAMTUNE`, Display Expanded 700, tracking `0.18em` | **Mint** | active nav, required-field marker, "configured" states, product illustration accent |
 | StillUp | `StillUp`, Heading Sans 800, tracking `-0.02em` | **Sun** | active nav, count badges, product illustration accent |
-| Handstamp | `HANDSTAMP`, Display Expanded 700, tracking `0.14–0.18em` (no outlined wordmark or mark in this repo yet) | **Lilac** | active nav, product identity |
+| Handstamp | `HANDSTAMP`, Display Expanded 700, tracking `0.16em` | **Lilac** | active nav, product identity |
 | Rec Draw | `REC DRAW`, Display Expanded 700, tracking `0.16em` | **Sky** | active nav, the selected tool, product illustration accent |
 
 Rules:
@@ -474,10 +474,10 @@ Every logo comes from one generator, [`build.py`](build.py). All source files ar
 
 | Asset | Files (`-ink` for light backgrounds, `-cream` for dark) |
 |-------|------------------------------------------------------------|
-| Mark | `rec-mark-*.svg` · `stillup-mark-*.svg` · `paramtune-mark-*.svg` · `draw-mark-*.svg` (Rec Draw) |
+| Mark | `rec-mark-*.svg` · `stillup-mark-*.svg` · `paramtune-mark-*.svg` · `draw-mark-*.svg` (Rec Draw) · `handstamp-mark-*.svg` |
 | Micro mark (≤32px) | `*-micro-ink.svg` · `*-micro-cream.svg` |
 | Horizontal lockup | `*-lockup-ink.svg` · `*-lockup-cream.svg` |
-| Endorsed lockup | `stillup-endorsed-*.svg` · `paramtune-endorsed-*.svg` (none for Rec Draw, see §2.2) |
+| Endorsed lockup | `stillup-endorsed-*.svg` · `paramtune-endorsed-*.svg` · `handstamp-endorsed-*.svg` (none for Rec Draw, see §2.2) |
 | App icon (128) | `*-app-icon.svg` |
 | Favicon (32) | `*-favicon.svg` |
 
@@ -509,9 +509,11 @@ And the same rules:
 2. **One line weight.** Knock-outs and strokes are **3.6u** (3u for gauge ticks). Corners and caps are round.
 3. **Safe area 2u.** Nothing crosses x/y = 2 or 46.
 4. **The spark points up-right.** The Paramtune pointer and the accent in illustrations lean toward 45°. This shared gesture is what ties the family together.
-5. **One primitive + one product motif.** StillUp is Lens + Pulse (the eye *watching* a heartbeat). Paramtune is Gauge + Ticks + pointer on the Spark axis (the pupil *grown into* a dial). Rec Draw is Gauge + Scribble + Spark (a pen stroke drawn across the disc, rising toward a spark).
+5. **One primitive + one product motif.** StillUp is Lens + Pulse (the eye *watching* a heartbeat). Paramtune is Gauge + Ticks + pointer on the Spark axis (the pupil *grown into* a dial). Rec Draw is Gauge + Scribble + Spark (a pen stroke drawn across the disc, rising toward a spark). Handstamp is Gauge + Check + Seal (the stamp's impression, vouching that you're in).
 
 **Rec Draw construction.** Drawing *makes* things on a canvas you control, so it takes the **Gauge** (the hand on the dial), not the Lens (which only watches). The disc is r **14** (between Paramtune's 12.5 and the 14.5 it was cut down from, because Rec Draw has 3 ticks instead of 7 and a longer knock-out). The motif is a **scribble**: 1.5 periods of a sine wave, 19u long, amplitude 3u, rising at 20°, cut 3.6u through the disc. It stays inside the disc so the disc reads as one piece. The **spark** is three 3u ticks from r 17.5 to 21.5 at 75°, 45° and 15°, fanned round the 45° axis: the moment an idea lands. Because all the outside detail is up-right, the disc sits **1.5u down-left along the spark axis**, at (22.5, 25.5), so the mark centres optically on the grid. Ink coverage is within 1% of Paramtune's.
+
+**Handstamp construction.** Handstamp *vouches* for people: it's the stamp on your hand that lets you into every R.E.C. app. It takes the **Gauge**, because it decides who gets in rather than watching. The disc is r **11**, the impression, with a **check** cut 3.6u through it: short arm down to a vertex just below-left of centre, long arm up to r 7.6 on the 45° spark axis. Round it runs the stamp's **rim**, a 3u stroke at r **16.5**, broken from 15° to 75° around the spark axis. In the break sits the **spark**, one 3u tick from r 14.5 to 19.5 at 45°, which the check's long arm points at. The disc is smaller than Paramtune's because the rim carries weight; ink coverage is within 5% of Paramtune's and Rec Draw's.
 
 ### 2.5 Lockups
 
@@ -529,20 +531,21 @@ Wordmark specs:
 | PARAMTUNE | Archivo, wdth 125 | 700 | `0.18em` | UPPER |
 | StillUp | Figtree | 800 | `-0.02em` | Camel (kept for existing brand recognition) |
 | REC DRAW | Archivo, wdth 125 | 700 | `0.16em` | UPPER |
+| HANDSTAMP | Archivo, wdth 125 | 700 | `0.16em` | UPPER |
 | *Future product* | Archivo, wdth 125 | 700 | `0.14–0.18em` | UPPER |
 
 ### 2.6 Clear space, sizes and micro marks
 
 - **Clear space** around any lockup equals the wordmark's cap height (the height of the "E" in the REC chain).
 - **Minimum sizes:** full mark 20px (the REC chain 40px wide), horizontal lockup 96px wide, endorsed lockup 160px wide.
-- **Micro marks** below 32px: REC switches to the R with the E behind it, cropped to the safe square. This is a first pass and still needs a hand-tuned 16px drawing. StillUp switches to a single bold peak cut 5u thick. Paramtune drops its ticks and becomes a solid disc with a 5.5u pointer. Rec Draw drops its spark ticks and becomes a centred r 20 disc with a bolder scribble (26u long, amplitude 4.2u, cut 5u), which still reads as a pen line at 16px. Use the micro marks for favicons, tab icons, 16–24px avatars and status-bar icons.
+- **Micro marks** below 32px: REC switches to the R with the E behind it, cropped to the safe square. This is a first pass and still needs a hand-tuned 16px drawing. StillUp switches to a single bold peak cut 5u thick. Paramtune drops its ticks and becomes a solid disc with a 5.5u pointer. Rec Draw drops its spark ticks and becomes a centred r 20 disc with a bolder scribble (26u long, amplitude 4.2u, cut 5u), which still reads as a pen line at 16px. Handstamp drops the rim and spark and becomes a r 20 disc with a 5.5u check whose long arm still ends on the 45° axis. Use the micro marks for favicons, tab icons, 16–24px avatars and status-bar icons.
 
 ![App icons and favicons](sheets/app-icons.svg)
 
 ### 2.7 App icons
 
 - 104 × 104 tile inside a 128 canvas, `rx 10` (the one place larger than §6.1's 6px max, because OS icon masks need it), 4u `deep-900` outline, plus an **8px offset shadow** in `deep-900`. It's the offset-shadow DNA at icon scale.
-- Tile fill: **REC** `purple-500` with a cream mark · **StillUp** `sun-300` with an ink mark · **Paramtune** `mint-400` with an ink mark · **Rec Draw** `sky-400` with an ink mark. In general: the product's signature accent with an ink mark.
+- Tile fill: **REC** `purple-500` with a cream mark · **StillUp** `sun-300` with an ink mark · **Paramtune** `mint-400` with an ink mark · **Rec Draw** `sky-400` with an ink mark · **Handstamp** `lilac-400` with an ink mark. In general: the product's signature accent with an ink mark.
 - Mark at 64 (50% of canvas), centred on the tile. The REC chain is wide, so it sits at 84 to fill the tile's width.
 - For iOS/Android exports, flatten the shadow inside the tile mask, or drop it and keep only the outline.
 
@@ -1890,6 +1893,7 @@ Run this before shipping any screen:
 
 | Version | Date | Notes |
 |---------|------|-------|
+| 1.7.0 | 2026-10-10 | Handstamp gets its mark: Gauge + Check + Seal (disc r 11 with a 3.6u check knock-out pointing up the spark axis; a 3u rim at r 16.5 broken from 15° to 75°, with one spark tick in the break), micro mark (r 20 disc, 5.5u check), `HANDSTAMP` wordmark fixed at `0.16em`, lockups, endorsed lockups, `lilac-400` app icon and favicon. Logo sheets and the construction sheet now show five brands. No token changes. |
 | 1.6.0 | 2026-10-04 | Expanded §11.5 with canonical landing-page guidance based on Paramtune and documentation guidance based on StillUp: shared requirements, section structures, layout dimensions, responsive behavior, reading hierarchy, navigation, accessibility and product-specific choices. Extended the review checklist. No token or generated asset changes. |
 | 1.5.0 | 2026-10-03 | New product brand **Rec Draw** (private whiteboard): Gauge + Scribble + Spark mark (disc r 14, offset 1.5u down-left on the spark axis; scribble knock-out; three spark ticks round 45°), micro mark, `REC DRAW` wordmark (Archivo Expanded 700, `0.16em`), lockups, app icon and favicon (`logos/draw-*`); no endorsed lockup. New pastel **Sky** (`sky-100` `#E2F0FA`, `sky-300` `#B4DAF2`, `sky-400` `#5DB4EA`, `sky-600` `#1E5F8C`, `sky-950` `#0E1C25`) as Rec Draw's accent, with no status meaning; contrast pairs in §13.1 and the front matter. **Lilac** registered as **Handstamp**'s accent (it was listed as free). `data-product="handstamp"` and `"draw"` accent blocks in §14. Scribble added to the motif kit. Sheets extended. |
 | 1.4.1 | 2026-10-03 | Fix: dark `danger-solid` `#D93F5E` → `#D23758`, so white text on the destructive button is 4.74:1 (was 4.35:1, below AA). Light theme unchanged (`rose-600`). |

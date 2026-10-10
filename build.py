@@ -28,7 +28,7 @@ PURPLE_300, PURPLE_500, PURPLE_600 = "#AC8BFF", "#7638FA", "#6524E8"
 SUN_300, SUN_400 = "#F2C641", "#E8B931"
 MINT_300, MINT_400, MINT_500 = "#A8D8C2", "#4CC79A", "#2F8F7A"
 ROSE_300, ROSE_400, ROSE_500, ROSE_600 = "#F2C9D1", "#F07A9C", "#E8739A", "#C42F52"
-LILAC_300 = "#DCD7EE"
+LILAC_300, LILAC_400 = "#DCD7EE", "#B3A8EE"
 SKY_300, SKY_400 = "#B4DAF2", "#5DB4EA"
 
 
@@ -225,7 +225,37 @@ def mark_draw(fg):
             f'<circle cx="{cx}" cy="{cy}" r="14" fill="{fg}" mask="url(#{m})"/>')
 
 
-MARKS = {"rec": mark_rec, "stillup": mark_stillup, "paramtune": mark_paramtune, "draw": mark_draw}
+# Handstamp: Gauge + Check + Seal. The disc is the stamp's impression with a check cut through it
+# (admitted, vouched for); round it runs the stamp's rim, broken on the spark axis, where one spark
+# tick sits and the check's long arm points (DESIGN.md §2.4).
+HANDSTAMP_DISC, HANDSTAMP_RIM, HANDSTAMP_GAP = 11, 16.5, (15, 75)
+
+
+def _check(r, end, scale=1.0):
+    """A check centred on the grid whose long arm ends at `end` on the 45° spark axis."""
+    s = r / 12 * scale
+    x, y = _polar(end, 45)
+    return f"M{24 - 6.6 * s:.2f} {24 - 0.2 * s:.2f}L{24 - 1.8 * s:.2f} {24 + 4.4 * s:.2f}L{x:.2f} {y:.2f}"
+
+
+def mark_handstamp(fg):
+    m = _id("m")
+    r = HANDSTAMP_RIM
+    x0, y0 = _polar(r, HANDSTAMP_GAP[1])
+    x1, y1 = _polar(r, HANDSTAMP_GAP[0])
+    t0, t1 = _polar(r - 2, 45), _polar(r + 3, 45)
+    return (f'<defs><mask id="{m}" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48">'
+            f'<rect width="48" height="48" fill="#fff"/>'
+            f'<path d="{_check(HANDSTAMP_DISC, 7.6)}" fill="none" stroke="#000" stroke-width="{STROKE}" '
+            f'stroke-linecap="round" stroke-linejoin="round"/></mask></defs>'
+            f'<g fill="none" stroke="{fg}" stroke-width="3" stroke-linecap="round">'
+            f'<path d="M{x0:.2f} {y0:.2f}A{r} {r} 0 1 0 {x1:.2f} {y1:.2f}"/>'
+            f'<line x1="{t0[0]:.2f}" y1="{t0[1]:.2f}" x2="{t1[0]:.2f}" y2="{t1[1]:.2f}"/></g>'
+            f'<circle cx="24" cy="24" r="{HANDSTAMP_DISC}" fill="{fg}" mask="url(#{m})"/>')
+
+
+MARKS = {"rec": mark_rec, "stillup": mark_stillup, "paramtune": mark_paramtune, "draw": mark_draw,
+         "handstamp": mark_handstamp}
 
 # Micro marks (≤ 32 px): drop fine detail, thicken knock-outs (DESIGN.md §2.6).
 PULSE_MICRO = "M2 24H14L22 12L28 35L33 24H46"
@@ -258,7 +288,18 @@ def micro_draw(fg):
             f'<circle cx="24" cy="24" r="20" fill="{fg}" mask="url(#{m})"/>')
 
 
-MICRO = {"rec": micro_rec, "stillup": micro_stillup, "paramtune": micro_paramtune, "draw": micro_draw}
+def micro_handstamp(fg):
+    """≤ 32 px: the rim and spark go; a r 20 disc with a 5.5u check whose long arm points up-right."""
+    m = _id("m")
+    return (f'<defs><mask id="{m}" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48">'
+            f'<rect width="48" height="48" fill="#fff"/>'
+            f'<path d="{_check(20, 12.5, 0.92)}" fill="none" stroke="#000" stroke-width="5.5" '
+            f'stroke-linecap="round" stroke-linejoin="round"/></mask></defs>'
+            f'<circle cx="24" cy="24" r="20" fill="{fg}" mask="url(#{m})"/>')
+
+
+MICRO = {"rec": micro_rec, "stillup": micro_stillup, "paramtune": micro_paramtune, "draw": micro_draw,
+         "handstamp": micro_handstamp}
 
 
 def place(markup, x, y, size):
@@ -286,9 +327,10 @@ WORDMARKS = {
     "paramtune": dict(face=ARCHIVO_X700, text="PARAMTUNE", tracking=0.18),
     "stillup":   dict(face=FIGTREE_800,  text="StillUp",   tracking=-0.02),
     "draw":      dict(face=ARCHIVO_X700, text="REC DRAW",  tracking=0.16),
+    "handstamp": dict(face=ARCHIVO_X700, text="HANDSTAMP", tracking=0.16),
 }
 MARK, CAP, GAP = 48, 20, 12
-PRODUCTS = ("rec", "stillup", "paramtune", "draw")  # sheet order
+PRODUCTS = ("rec", "stillup", "paramtune", "draw", "handstamp")  # sheet order
 NAMES = {"draw": "rec draw"}  # display name in titles and sheet stamps, where it differs from the file prefix
 
 
@@ -330,7 +372,7 @@ def endorsed(name, fg, muted, x=0.0, y=0.0, scale=1.0):
 
 
 # Rec Draw has no endorsed lockup: its wordmark already says REC, so "REC DRAW by REC" would stutter.
-ENDORSED = ("stillup", "paramtune")
+ENDORSED = ("stillup", "paramtune", "handstamp")
 
 
 def build_logos():
@@ -351,6 +393,7 @@ ICONS = {
     "stillup":   dict(tile=SUN_300,    fg=DEEP),
     "paramtune": dict(tile=MINT_400,   fg=DEEP),
     "draw":      dict(tile=SKY_400,    fg=DEEP),
+    "handstamp": dict(tile=LILAC_400,  fg=DEEP),
 }
 
 
@@ -383,7 +426,7 @@ def stamp(text, x, y, fill, cap=7):
 
 
 def build_logo_sheet():
-    W, H = 1200, 876
+    W, H = 1200, 1060
     out = [f'<rect width="{W}" height="{H}" fill="{PAPER_100}"/>',
            f'<rect width="{W // 2}" height="{H}" fill="{INK_950}"/>']
     for col, (bg, fg, muted, label) in enumerate(((INK_950, CREAM, STONE_400, "Dark (default)"),
@@ -395,19 +438,18 @@ def build_logo_sheet():
             body, w, h = lockup(name, fg, ox, y, 1.0)
             out.append(body)
             y += 96
-        body, w, h = endorsed("stillup", fg, muted, ox, y)
-        out.append(body)
-        body, w, h = endorsed("paramtune", fg, muted, ox, y + 100)
-        out.append(body)
-        out.append(stamp("Marks · micro", ox, 720, muted))
+        for i, name in enumerate(ENDORSED):
+            body, w, h = endorsed(name, fg, muted, ox, y + i * 100)
+            out.append(body)
+        out.append(stamp("Marks · micro", ox, 904, muted))
         for i, name in enumerate(PRODUCTS):
-            out.append(place(MARKS[name](fg), ox + i * 84, 744, 64))
-            out.append(place(MICRO[name](fg), ox + 352 + i * 40, 764, 24))
+            out.append(place(MARKS[name](fg), ox + i * 76, 928, 64))
+            out.append(place(MICRO[name](fg), ox + 392 + i * 30, 948, 24))
     out.append(f'<rect x="0" y="{H - 1}" width="{W}" height="1" fill="{INK_700}"/>')
     write("sheets/logo-sheet.svg", svg(W, H, "".join(out), "REC logo family"))
 
     # App icons + favicons sheet
-    W, H = 1000, 260
+    W, H = 1240, 260
     out = [f'<rect width="{W}" height="{H}" fill="{PAPER_200}"/>', stamp("App icons · favicons", 40, 40, "#4B5B61")]
     for i, name in enumerate(PRODUCTS):
         x = 40 + i * 240
@@ -424,7 +466,7 @@ def build_logo_sheet():
 
 def build_construction():
     S = 6  # 48 units × 6 = 288px per mark
-    W, H = 1416, 470
+    W, H = 1752, 470
     out = [f'<rect width="{W}" height="{H}" fill="{PAPER_50}"/>']
     for i, name in enumerate(PRODUCTS):
         ox, oy = 48 + i * 336, 64
@@ -456,6 +498,15 @@ def build_construction():
             x2, y2 = _polar(30, 45)
             g.append(f'<path d="M{cx} {cy}L{x2 + cx - 24:.2f} {y2 + cy - 24:.2f}" stroke="{MINT_500}" stroke-width="0.35" stroke-dasharray="1 0.6"/>')
             g.append(f'<circle cx="24" cy="24" r="0.8" fill="{MINT_500}"/><circle cx="{cx}" cy="{cy}" r="0.8" fill="{MINT_500}"/>')
+        elif name == "handstamp":  # the disc, the rim and its gap, the spark axis
+            g.append(f'<circle cx="24" cy="24" r="{HANDSTAMP_DISC}" fill="none" stroke="{PURPLE_500}" stroke-width="0.25"/>')
+            g.append(f'<circle cx="24" cy="24" r="{HANDSTAMP_RIM}" fill="none" stroke="{PURPLE_500}" stroke-width="0.25" stroke-dasharray="1 0.6"/>')
+            for deg in HANDSTAMP_GAP:
+                x2, y2 = _polar(22, deg)
+                g.append(f'<path d="M24 24L{x2:.2f} {y2:.2f}" stroke="{PURPLE_500}" stroke-width="0.25" stroke-dasharray="1 0.6"/>')
+            x2, y2 = _polar(30, 45)
+            g.append(f'<path d="M24 24L{x2:.2f} {y2:.2f}" stroke="{MINT_500}" stroke-width="0.35" stroke-dasharray="1 0.6"/>')
+            g.append(f'<circle cx="24" cy="24" r="0.8" fill="{MINT_500}"/>')
         else:  # lens / pupil / gauge keylines and the spark axis
             sx, sy, _ = SPARK
             g.append(f'<path d="{LENS}" fill="none" stroke="{PURPLE_500}" stroke-width="0.25"/>')
