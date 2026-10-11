@@ -1,8 +1,8 @@
 R.E.C. brand
-Copyright 2026 Rodrigo Espinosa Curbelo
+Copyright (c) 2026 Rodrigo Espinosa Curbelo
 
-The code in this repository (build.py and scripts/) is licensed under the Apache License,
-Version 2.0 (see LICENSE).
+Licensed under the MIT License (see LICENSE). This covers the code in this repository
+(build.py and scripts/).
 
 DESIGN.md and the other documentation are licensed under Creative Commons Attribution 4.0
 International (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/. Attribution:

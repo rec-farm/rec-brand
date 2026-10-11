@@ -33,5 +33,5 @@ maintainer's local setup; it is fine if it fails for you.
 
 ## Licensing
 
-By contributing you agree that code is licensed under Apache-2.0 and docs under CC BY 4.0. Logos,
+By contributing you agree that code is licensed under MIT and docs under CC BY 4.0. Logos,
 marks and illustrations are not open-licensed; see [TRADEMARKS.md](TRADEMARKS.md).

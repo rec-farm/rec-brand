@@ -36,7 +36,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-- **Code** (`build.py`, `scripts/`): [Apache-2.0](LICENSE) · © 2026 Rodrigo Espinosa Curbelo. See [NOTICE](NOTICE).
+- **Code** (`build.py`, `scripts/`): [MIT](LICENSE) · © 2026 Rodrigo Espinosa Curbelo. See [NOTICE](NOTICE).
 - **DESIGN.md and other docs:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) · attribution: Rodrigo Espinosa Curbelo.
 - **Logos, marks, wordmarks, app icons, favicons, sheets** (`logos/`, `sheets/`) **and illustrations** (`illustrations/`): not open-licensed. The names and marks are trademarks of RECIAM SAS; see [TRADEMARKS.md](TRADEMARKS.md).
 - **Fonts** (`fonts/`): SIL Open Font License 1.1, see [`fonts/OFL.txt`](fonts/OFL.txt).
