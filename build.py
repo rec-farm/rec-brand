@@ -30,6 +30,7 @@ MINT_300, MINT_400, MINT_500 = "#A8D8C2", "#4CC79A", "#2F8F7A"
 ROSE_300, ROSE_400, ROSE_500, ROSE_600 = "#F2C9D1", "#F07A9C", "#E8739A", "#C42F52"
 LILAC_300, LILAC_400 = "#DCD7EE", "#B3A8EE"
 SKY_300, SKY_400 = "#B4DAF2", "#5DB4EA"
+CLAY_300, CLAY_400 = "#F4C3A0", "#EE9A62"
 
 
 # ── Outlined text ───────────────────────────────────────────────────────────
@@ -254,8 +255,29 @@ def mark_handstamp(fg):
             f'<circle cx="24" cy="24" r="{HANDSTAMP_DISC}" fill="{fg}" mask="url(#{m})"/>')
 
 
+# Valtr: Gauge + Keyhole + Spark. The disc is a vault door with a keyhole cut through it (stored,
+# locked away); one spark tick sits on the 45° axis, as on Handstamp (DESIGN.md §2.4).
+VALTR_DISC, VALTR_HEAD = 14.5, (24, 21, 4.4)  # disc radius; keyhole head (cx, cy, r)
+VALTR_SLOT = "M22.2 23.5L20.6 32.5H27.4L25.8 23.5Z"  # tapered slot under the head
+
+
+def _keyhole(head, slot, rim=1.0):
+    cx, cy, r = head
+    return (f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="#000"/>'
+            f'<path d="{slot}" fill="#000" stroke="#000" stroke-width="{rim}" stroke-linejoin="round"/>')
+
+
+def mark_valtr(fg):
+    m = _id("m")
+    t0, t1 = _polar(VALTR_DISC + 3.5, 45), _polar(VALTR_DISC + 8, 45)
+    return (f'<defs><mask id="{m}" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48">'
+            f'<rect width="48" height="48" fill="#fff"/>{_keyhole(VALTR_HEAD, VALTR_SLOT)}</mask></defs>'
+            f'<line x1="{t0[0]:.2f}" y1="{t0[1]:.2f}" x2="{t1[0]:.2f}" y2="{t1[1]:.2f}" stroke="{fg}" stroke-width="3" stroke-linecap="round"/>'
+            f'<circle cx="24" cy="24" r="{VALTR_DISC}" fill="{fg}" mask="url(#{m})"/>')
+
+
 MARKS = {"rec": mark_rec, "stillup": mark_stillup, "paramtune": mark_paramtune, "draw": mark_draw,
-         "handstamp": mark_handstamp}
+         "handstamp": mark_handstamp, "valtr": mark_valtr}
 
 # Micro marks (≤ 32 px): drop fine detail, thicken knock-outs (DESIGN.md §2.6).
 PULSE_MICRO = "M2 24H14L22 12L28 35L33 24H46"
@@ -298,8 +320,17 @@ def micro_handstamp(fg):
             f'<circle cx="24" cy="24" r="20" fill="{fg}" mask="url(#{m})"/>')
 
 
+def micro_valtr(fg):
+    """≤ 32 px: the spark goes; a r 20 disc with the keyhole scaled up (head r 6.4, slot 5u at the top)."""
+    m = _id("m")
+    return (f'<defs><mask id="{m}" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48">'
+            f'<rect width="48" height="48" fill="#fff"/>'
+            f'{_keyhole((24, 19.5, 6.4), "M21.5 23L19.2 35.5H28.8L26.5 23Z", 1.4)}</mask></defs>'
+            f'<circle cx="24" cy="24" r="20" fill="{fg}" mask="url(#{m})"/>')
+
+
 MICRO = {"rec": micro_rec, "stillup": micro_stillup, "paramtune": micro_paramtune, "draw": micro_draw,
-         "handstamp": micro_handstamp}
+         "handstamp": micro_handstamp, "valtr": micro_valtr}
 
 
 def place(markup, x, y, size):
@@ -328,9 +359,10 @@ WORDMARKS = {
     "stillup":   dict(face=FIGTREE_800,  text="StillUp",   tracking=-0.02),
     "draw":      dict(face=ARCHIVO_X700, text="REC DRAW",  tracking=0.16),
     "handstamp": dict(face=ARCHIVO_X700, text="HANDSTAMP", tracking=0.16),
+    "valtr":     dict(face=ARCHIVO_X700, text="VALTR",     tracking=0.16),
 }
 MARK, CAP, GAP = 48, 20, 12
-PRODUCTS = ("rec", "stillup", "paramtune", "draw", "handstamp")  # sheet order
+PRODUCTS = ("rec", "stillup", "paramtune", "draw", "handstamp", "valtr")  # sheet order
 NAMES = {"draw": "rec draw"}  # display name in titles and sheet stamps, where it differs from the file prefix
 
 
@@ -372,7 +404,7 @@ def endorsed(name, fg, muted, x=0.0, y=0.0, scale=1.0):
 
 
 # Rec Draw has no endorsed lockup: its wordmark already says REC, so "REC DRAW by REC" would stutter.
-ENDORSED = ("stillup", "paramtune", "handstamp")
+ENDORSED = ("stillup", "paramtune", "handstamp", "valtr")
 
 
 def build_logos():
@@ -394,6 +426,7 @@ ICONS = {
     "paramtune": dict(tile=MINT_400,   fg=DEEP),
     "draw":      dict(tile=SKY_400,    fg=DEEP),
     "handstamp": dict(tile=LILAC_400,  fg=DEEP),
+    "valtr":     dict(tile=CLAY_400,   fg=DEEP),
 }
 
 
@@ -426,7 +459,8 @@ def stamp(text, x, y, fill, cap=7):
 
 
 def build_logo_sheet():
-    W, H = 1200, 1060
+    marks_y = 96 + len(PRODUCTS) * 96 + len(ENDORSED) * 100 + 8
+    W, H = 1200, marks_y + 140
     out = [f'<rect width="{W}" height="{H}" fill="{PAPER_100}"/>',
            f'<rect width="{W // 2}" height="{H}" fill="{INK_950}"/>']
     for col, (bg, fg, muted, label) in enumerate(((INK_950, CREAM, STONE_400, "Dark (default)"),
@@ -441,15 +475,15 @@ def build_logo_sheet():
         for i, name in enumerate(ENDORSED):
             body, w, h = endorsed(name, fg, muted, ox, y + i * 100)
             out.append(body)
-        out.append(stamp("Marks · micro", ox, 904, muted))
+        out.append(stamp("Marks · micro", ox, marks_y, muted))
         for i, name in enumerate(PRODUCTS):
-            out.append(place(MARKS[name](fg), ox + i * 76, 928, 64))
-            out.append(place(MICRO[name](fg), ox + 392 + i * 30, 948, 24))
+            out.append(place(MARKS[name](fg), ox + i * 76, marks_y + 24, 64))
+            out.append(place(MICRO[name](fg), ox + 20 + i * 76, marks_y + 100, 24))
     out.append(f'<rect x="0" y="{H - 1}" width="{W}" height="1" fill="{INK_700}"/>')
     write("sheets/logo-sheet.svg", svg(W, H, "".join(out), "REC logo family"))
 
     # App icons + favicons sheet
-    W, H = 1240, 260
+    W, H = 40 + len(PRODUCTS) * 240, 260
     out = [f'<rect width="{W}" height="{H}" fill="{PAPER_200}"/>', stamp("App icons · favicons", 40, 40, "#4B5B61")]
     for i, name in enumerate(PRODUCTS):
         x = 40 + i * 240
@@ -466,7 +500,7 @@ def build_logo_sheet():
 
 def build_construction():
     S = 6  # 48 units × 6 = 288px per mark
-    W, H = 1752, 470
+    W, H = 48 + (len(PRODUCTS) - 1) * 336 + 288 + 72, 470
     out = [f'<rect width="{W}" height="{H}" fill="{PAPER_50}"/>']
     for i, name in enumerate(PRODUCTS):
         ox, oy = 48 + i * 336, 64
@@ -504,6 +538,14 @@ def build_construction():
             for deg in HANDSTAMP_GAP:
                 x2, y2 = _polar(22, deg)
                 g.append(f'<path d="M24 24L{x2:.2f} {y2:.2f}" stroke="{PURPLE_500}" stroke-width="0.25" stroke-dasharray="1 0.6"/>')
+            x2, y2 = _polar(30, 45)
+            g.append(f'<path d="M24 24L{x2:.2f} {y2:.2f}" stroke="{MINT_500}" stroke-width="0.35" stroke-dasharray="1 0.6"/>')
+            g.append(f'<circle cx="24" cy="24" r="0.8" fill="{MINT_500}"/>')
+        elif name == "valtr":  # the disc, the keyhole head and the spark axis
+            cx, cy, r = VALTR_HEAD
+            g.append(f'<circle cx="24" cy="24" r="{VALTR_DISC}" fill="none" stroke="{PURPLE_500}" stroke-width="0.25"/>')
+            g.append(f'<circle cx="24" cy="24" r="12.5" fill="none" stroke="{PURPLE_500}" stroke-width="0.25" stroke-dasharray="1 0.6"/>')
+            g.append(f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="{PURPLE_500}" stroke-width="0.25"/>')
             x2, y2 = _polar(30, 45)
             g.append(f'<path d="M24 24L{x2:.2f} {y2:.2f}" stroke="{MINT_500}" stroke-width="0.35" stroke-dasharray="1 0.6"/>')
             g.append(f'<circle cx="24" cy="24" r="0.8" fill="{MINT_500}"/>')

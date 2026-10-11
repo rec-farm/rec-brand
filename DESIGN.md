@@ -4,7 +4,7 @@
 # The format has no themes, so colors are primitives and `-light` components cover the Paper theme.
 version: alpha  # DESIGN.md format version, not the brand version (see the header below)
 name: REC Design System
-description: One design DNA for every R.E.C. product (Paramtune, StillUp, Handstamp, Rec Draw). Dark by default, Paper light theme, purple for action, one signature accent per product.
+description: One design DNA for every R.E.C. product (Paramtune, StillUp, Handstamp, Valtr, Rec Draw). Dark by default, Paper light theme, purple for action, one signature accent per product.
 colors:
   # Roles (dark default). The full per-theme mapping is §3.3.
   primary: "{colors.purple-500}"
@@ -79,6 +79,11 @@ colors:
   sky-400: "#5DB4EA"
   sky-600: "#1E5F8C"
   sky-950: "#0E1C25"
+  clay-100: "#FBE6D6"
+  clay-300: "#F4C3A0"
+  clay-400: "#EE9A62"
+  clay-600: "#9A4515"
+  clay-950: "#26160C"
 typography:
   display-hero:
     fontFamily: Figtree
@@ -338,12 +343,31 @@ components:
     textColor: "{colors.deep-900}"
     typography: "{typography.stat}"
     rounded: "{rounded.none}"
+  tile-clay:
+    backgroundColor: "{colors.clay-950}"
+    textColor: "{colors.cream}"
+    typography: "{typography.stat}"
+    rounded: "{rounded.none}"
+  tile-clay-caption:
+    backgroundColor: "{colors.clay-950}"
+    textColor: "{colors.stone-400}"
+  tile-clay-light:
+    backgroundColor: "{colors.clay-300}"
+    textColor: "{colors.deep-900}"
+    typography: "{typography.stat}"
+    rounded: "{rounded.none}"
   accent-text-draw:
     backgroundColor: "{colors.ink-950}"
     textColor: "{colors.sky-400}"
   accent-text-draw-light:
     backgroundColor: "{colors.paper-100}"
     textColor: "{colors.sky-600}"
+  accent-text-valtr:
+    backgroundColor: "{colors.ink-950}"
+    textColor: "{colors.clay-400}"
+  accent-text-valtr-light:
+    backgroundColor: "{colors.paper-100}"
+    textColor: "{colors.clay-600}"
   nav-active-paramtune:
     backgroundColor: "{colors.mint-400}"
     textColor: "{colors.ink-950}"
@@ -384,12 +408,22 @@ components:
     textColor: "{colors.deep-900}"
     rounded: "{rounded.sm}"
     height: "40px"
+  nav-active-valtr:
+    backgroundColor: "{colors.clay-400}"
+    textColor: "{colors.ink-950}"
+    rounded: "{rounded.sm}"
+    height: "40px"
+  nav-active-valtr-light:
+    backgroundColor: "{colors.clay-300}"
+    textColor: "{colors.deep-900}"
+    rounded: "{rounded.sm}"
+    height: "40px"
 ---
 
 # REC Design System
 
-> **Version** 1.7.0 · **Owner** RECIAM SAS · **Last updated** 2026-10-10
-> One design DNA for every REC product: **Paramtune**, **StillUp**, **Handstamp**, **Rec Draw**, and whatever comes next.
+> **Version** 1.8.0 · **Owner** RECIAM SAS · **Last updated** 2026-10-11
+> One design DNA for every REC product: **Paramtune**, **StillUp**, **Handstamp**, **Valtr**, **Rec Draw**, and whatever comes next.
 
 ---
 
@@ -438,6 +472,7 @@ REC  (master brand of RECIAM SAS · chain monogram · purple)
 ├── Paramtune   — config & schema management      · signature: Mint
 ├── StillUp     — API uptime & health checks      · signature: Sun
 ├── Handstamp   — passwordless OpenID Connect     · signature: Lilac
+├── Valtr       — secrets per project & env       · signature: Clay
 ├── Rec Draw    — private whiteboard & sketching  · signature: Sky
 └── <future>    — Rose is the only pastel left, and it reads as failure: add a new hue (§2.10 step 9)
 ```
@@ -456,6 +491,7 @@ REC  (master brand of RECIAM SAS · chain monogram · purple)
 | Paramtune | `PARAMTUNE`, Display Expanded 700, tracking `0.18em` | **Mint** | active nav, required-field marker, "configured" states, product illustration accent |
 | StillUp | `StillUp`, Heading Sans 800, tracking `-0.02em` | **Sun** | active nav, count badges, product illustration accent |
 | Handstamp | `HANDSTAMP`, Display Expanded 700, tracking `0.16em` | **Lilac** | active nav, product identity |
+| Valtr | `VALTR`, Display Expanded 700, tracking `0.16em` | **Clay** | active nav, product identity |
 | Rec Draw | `REC DRAW`, Display Expanded 700, tracking `0.16em` | **Sky** | active nav, the selected tool, product illustration accent |
 
 Rules:
@@ -463,7 +499,7 @@ Rules:
 - The product wordmark sits top-left in the sidebar or top bar. The sidebar footer carries the lockup `<product> · by REC` (the chain at 8px cap height) and the version in mono, e.g. `StillUp v0.1.0`.
 - The **signature accent is never the action color.** Buttons, links and focus rings are always purple. The accent marks *where you are* and *what this product is about*. It does not mark *what you can do*.
 - Paramtune and StillUp have different wordmark treatments on purpose. Inherited equity is fine. A new product should default to the Paramtune treatment (expanded uppercase).
-- **Accents that double as status.** Mint (healthy), Sun (attention), Lilac (pending/info) are also status colors (§3.2). Inside its own product the accent still means *place*, and status keeps its second signal (icon or word, §3.5 rule 4), so the two never get confused. Lilac is Handstamp's accent in the same way Mint is Paramtune's. Sky is the first accent with no status meaning: it is Rec Draw's only.
+- **Accents that double as status.** Mint (healthy), Sun (attention), Lilac (pending/info) are also status colors (§3.2). Inside its own product the accent still means *place*, and status keeps its second signal (icon or word, §3.5 rule 4), so the two never get confused. Lilac is Handstamp's accent in the same way Mint is Paramtune's. Sky is the first accent with no status meaning: it is Rec Draw's only. Clay is the second: it is Valtr's only.
 - **Why `REC DRAW` and not `DRAW`.** The product is called Rec Draw, and a lone uppercase verb in Archivo Expanded reads like a button label ("DRAW") rather than a name, and is too generic to own. `REC DRAW` keeps the full name and sits at about the same length as `PARAMTUNE`. Tracking is `0.16em` (not `0.18em`) so the two words hold together across the word space. Because the name already carries REC, Rec Draw has **no endorsed lockup** ("REC DRAW by REC" would stutter). Its sidebar footer still shows the chain and the version in mono, e.g. `Rec Draw v0.1.0`.
 
 ### 2.3 The logo family at a glance
@@ -474,10 +510,10 @@ Every logo comes from one generator, [`build.py`](build.py). All source files ar
 
 | Asset | Files (`-ink` for light backgrounds, `-cream` for dark) |
 |-------|------------------------------------------------------------|
-| Mark | `rec-mark-*.svg` · `stillup-mark-*.svg` · `paramtune-mark-*.svg` · `draw-mark-*.svg` (Rec Draw) · `handstamp-mark-*.svg` |
+| Mark | `rec-mark-*.svg` · `stillup-mark-*.svg` · `paramtune-mark-*.svg` · `draw-mark-*.svg` (Rec Draw) · `handstamp-mark-*.svg` · `valtr-mark-*.svg` |
 | Micro mark (≤32px) | `*-micro-ink.svg` · `*-micro-cream.svg` |
 | Horizontal lockup | `*-lockup-ink.svg` · `*-lockup-cream.svg` |
-| Endorsed lockup | `stillup-endorsed-*.svg` · `paramtune-endorsed-*.svg` · `handstamp-endorsed-*.svg` (none for Rec Draw, see §2.2) |
+| Endorsed lockup | `stillup-endorsed-*.svg` · `paramtune-endorsed-*.svg` · `handstamp-endorsed-*.svg` · `valtr-endorsed-*.svg` (none for Rec Draw, see §2.2) |
 | App icon (128) | `*-app-icon.svg` |
 | Favicon (32) | `*-favicon.svg` |
 
@@ -509,11 +545,13 @@ And the same rules:
 2. **One line weight.** Knock-outs and strokes are **3.6u** (3u for gauge ticks). Corners and caps are round.
 3. **Safe area 2u.** Nothing crosses x/y = 2 or 46.
 4. **The spark points up-right.** The Paramtune pointer and the accent in illustrations lean toward 45°. This shared gesture is what ties the family together.
-5. **One primitive + one product motif.** StillUp is Lens + Pulse (the eye *watching* a heartbeat). Paramtune is Gauge + Ticks + pointer on the Spark axis (the pupil *grown into* a dial). Rec Draw is Gauge + Scribble + Spark (a pen stroke drawn across the disc, rising toward a spark). Handstamp is Gauge + Check + Seal (the stamp's impression, vouching that you're in).
+5. **One primitive + one product motif.** StillUp is Lens + Pulse (the eye *watching* a heartbeat). Paramtune is Gauge + Ticks + pointer on the Spark axis (the pupil *grown into* a dial). Rec Draw is Gauge + Scribble + Spark (a pen stroke drawn across the disc, rising toward a spark). Handstamp is Gauge + Check + Seal (the stamp's impression, vouching that you're in). Valtr is Gauge + Keyhole + Spark (a vault door, keeping what you store locked away).
 
 **Rec Draw construction.** Drawing *makes* things on a canvas you control, so it takes the **Gauge** (the hand on the dial), not the Lens (which only watches). The disc is r **14** (between Paramtune's 12.5 and the 14.5 it was cut down from, because Rec Draw has 3 ticks instead of 7 and a longer knock-out). The motif is a **scribble**: 1.5 periods of a sine wave, 19u long, amplitude 3u, rising at 20°, cut 3.6u through the disc. It stays inside the disc so the disc reads as one piece. The **spark** is three 3u ticks from r 17.5 to 21.5 at 75°, 45° and 15°, fanned round the 45° axis: the moment an idea lands. Because all the outside detail is up-right, the disc sits **1.5u down-left along the spark axis**, at (22.5, 25.5), so the mark centres optically on the grid. Ink coverage is within 1% of Paramtune's.
 
 **Handstamp construction.** Handstamp *vouches* for people: it's the stamp on your hand that lets you into every R.E.C. app. It takes the **Gauge**, because it decides who gets in rather than watching. The disc is r **11**, the impression, with a **check** cut 3.6u through it: short arm down to a vertex just below-left of centre, long arm up to r 7.6 on the 45° spark axis. Round it runs the stamp's **rim**, a 3u stroke at r **16.5**, broken from 15° to 75° around the spark axis. In the break sits the **spark**, one 3u tick from r 14.5 to 19.5 at 45°, which the check's long arm points at. The disc is smaller than Paramtune's because the rim carries weight; ink coverage is within 5% of Paramtune's and Rec Draw's.
+
+**Valtr construction.** Valtr *stores* secrets and hands them out only to whoever holds the key, so it takes the **Gauge**: the disc is a vault door. The disc is r **14.5**, with a **keyhole** cut through it: a round head r **4.4** at (24, 21) and a slot below it, a trapezoid 3.6u wide under the head and 6.8u wide at y 32.5, cut with a 1u round-joined edge so its corners are soft. The keyhole stays upright, because a tilted keyhole reads as a mistake, so the gesture up-right comes from the **spark**: one 3u tick from r 18 to 22.5 at 45°, as on Handstamp. With no ring of ticks round it, the disc grows past Paramtune's 12.5 to match its weight; ink coverage is within 1% of Paramtune's and Rec Draw's.
 
 ### 2.5 Lockups
 
@@ -532,20 +570,21 @@ Wordmark specs:
 | StillUp | Figtree | 800 | `-0.02em` | Camel (kept for existing brand recognition) |
 | REC DRAW | Archivo, wdth 125 | 700 | `0.16em` | UPPER |
 | HANDSTAMP | Archivo, wdth 125 | 700 | `0.16em` | UPPER |
+| VALTR | Archivo, wdth 125 | 700 | `0.16em` | UPPER |
 | *Future product* | Archivo, wdth 125 | 700 | `0.14–0.18em` | UPPER |
 
 ### 2.6 Clear space, sizes and micro marks
 
 - **Clear space** around any lockup equals the wordmark's cap height (the height of the "E" in the REC chain).
 - **Minimum sizes:** full mark 20px (the REC chain 40px wide), horizontal lockup 96px wide, endorsed lockup 160px wide.
-- **Micro marks** below 32px: REC switches to the R with the E behind it, cropped to the safe square. This is a first pass and still needs a hand-tuned 16px drawing. StillUp switches to a single bold peak cut 5u thick. Paramtune drops its ticks and becomes a solid disc with a 5.5u pointer. Rec Draw drops its spark ticks and becomes a centred r 20 disc with a bolder scribble (26u long, amplitude 4.2u, cut 5u), which still reads as a pen line at 16px. Handstamp drops the rim and spark and becomes a r 20 disc with a 5.5u check whose long arm still ends on the 45° axis. Use the micro marks for favicons, tab icons, 16–24px avatars and status-bar icons.
+- **Micro marks** below 32px: REC switches to the R with the E behind it, cropped to the safe square. This is a first pass and still needs a hand-tuned 16px drawing. StillUp switches to a single bold peak cut 5u thick. Paramtune drops its ticks and becomes a solid disc with a 5.5u pointer. Rec Draw drops its spark ticks and becomes a centred r 20 disc with a bolder scribble (26u long, amplitude 4.2u, cut 5u), which still reads as a pen line at 16px. Handstamp drops the rim and spark and becomes a r 20 disc with a 5.5u check whose long arm still ends on the 45° axis. Valtr drops its spark and becomes a r 20 disc with the keyhole scaled up (head r 6.4, slot 5u at the top), which still reads as a keyhole at 16px. Use the micro marks for favicons, tab icons, 16–24px avatars and status-bar icons.
 
 ![App icons and favicons](sheets/app-icons.svg)
 
 ### 2.7 App icons
 
 - 104 × 104 tile inside a 128 canvas, `rx 10` (the one place larger than §6.1's 6px max, because OS icon masks need it), 4u `deep-900` outline, plus an **8px offset shadow** in `deep-900`. It's the offset-shadow DNA at icon scale.
-- Tile fill: **REC** `purple-500` with a cream mark · **StillUp** `sun-300` with an ink mark · **Paramtune** `mint-400` with an ink mark · **Rec Draw** `sky-400` with an ink mark · **Handstamp** `lilac-400` with an ink mark. In general: the product's signature accent with an ink mark.
+- Tile fill: **REC** `purple-500` with a cream mark · **StillUp** `sun-300` with an ink mark · **Paramtune** `mint-400` with an ink mark · **Rec Draw** `sky-400` with an ink mark · **Handstamp** `lilac-400` with an ink mark · **Valtr** `clay-400` with an ink mark. In general: the product's signature accent with an ink mark.
 - Mark at 64 (50% of canvas), centred on the tile. The REC chain is wide, so it sits at 84 to fill the tile's width.
 - For iOS/Android exports, flatten the shadow inside the tile mask, or drop it and keep only the outline.
 
@@ -576,7 +615,7 @@ Wordmark specs:
 
 ### 2.10 How to create a logo for a new REC product
 
-1. **Name the verb.** One word for what the product does for people: *watch* (StillUp), *tune* (Paramtune), *draw* (Rec Draw), maybe *ship*, *store*, *notify*.
+1. **Name the verb.** One word for what the product does for people: *watch* (StillUp), *tune* (Paramtune), *draw* (Rec Draw), *store* (Valtr), maybe *ship*, *notify*.
 2. **Choose the base primitive.** Pick **Lens** if the product *observes* things. Pick **Gauge** (the r 12.5 disc) if it *controls or measures* things.
 3. **Choose one motif** that shows the verb in 1–3 strokes. Draw from the motif kit (§8) when possible: pulse, dial, braces, slider, spark, prompt, scribble. Add a new motif only if none fits.
 4. **Cut, don't draw.** Apply the motif as a 3.6u knock-out through the primitive, or as up to 8 external 3u ticks. Nothing gets a second color.
@@ -584,7 +623,7 @@ Wordmark specs:
 6. **Check the grid.** Stay inside the 2u safe area, and keep the optical weight close to its siblings. Put it next to the existing marks at 64px and 20px. If it looks heavier, reduce the primitive (Paramtune's disc is 12.5, not 14.5, for exactly this reason).
 7. **Make the micro mark.** Remove all detail under 3u and thicken knock-outs to 5u+. Test it at 16px.
 8. **Set the wordmark.** Use Archivo wdth 125, weight 700, uppercase, tracking 0.14–0.18em. Lock it up per §2.5.
-9. **Pick the signature accent** from an unused pastel. Mint, Sun, Lilac (Handstamp) and Sky (Rec Draw) are taken, and Rose reads as failure, so add a new hue: give it the full ramp (`-100`, `-300`, `-400`, `-600`, `-950`), keep it clear of purple, and check it against the §13 contrast pairs (Sky in §13.1 is the worked example). Build the app icon per §2.7.
+9. **Pick the signature accent** from an unused pastel. Mint, Sun, Lilac (Handstamp), Sky (Rec Draw) and Clay (Valtr) are taken, and Rose reads as failure, so add a new hue: give it the full ramp (`-100`, `-300`, `-400`, `-600`, `-950`), keep it clear of purple, and check it against the §13 contrast pairs (Sky in §13.1 is the worked example). Build the app icon per §2.7.
 10. **Add it to `build.py`.** Write one `mark_<name>(fg)` and `micro_<name>(fg)` function, add entries to `MARKS`, `MICRO`, `WORDMARKS` and `ICONS`, then run the script. Never hand-edit the exported SVGs.
 
 ---
@@ -595,7 +634,7 @@ Wordmark specs:
 
 There are three layers. Components only ever use **semantic** tokens.
 
-1. **Primitives:** raw palettes (`ink`, `paper`, `purple`, `sun`, `mint`, `rose`, `lilac`, `sky`, `deep`).
+1. **Primitives:** raw palettes (`ink`, `paper`, `purple`, `sun`, `mint`, `rose`, `lilac`, `sky`, `clay`, `deep`).
 2. **Semantic:** role-based tokens that switch per theme (`canvas`, `surface-1`, `fg`, `fg-muted`, `border`, `primary`, `success-tile`, …).
 3. **Product:** `accent`, `accent-fg`, `accent-tile`, set by `data-product`.
 
@@ -671,6 +710,7 @@ Each hue has a **light tile**, a **solid** (icons, dots, strong accents) and a *
 | **Rose** | `#FBE3E8` | `#F2C9D1` | `#F07A9C` | `#C42F52` | `#26121A` | Failing, error, destructive |
 | **Lilac** | `#EEEBF7` | `#DCD7EE` | `#B3A8EE` | `#5B4FA8` | `#1A1828` | Pending, awaiting data, info, neutral-in-progress, Handstamp accent |
 | **Sky** | `#E2F0FA` | `#B4DAF2` | `#5DB4EA` | `#1E5F8C` | `#0E1C25` | Rec Draw accent only. No status meaning. Hue ≈ 203°, well clear of purple (≈ 259°) and lilac (≈ 249°) |
+| **Clay** | `#FBE6D6` | `#F4C3A0` | `#EE9A62` | `#9A4515` | `#26160C` | Valtr accent only. No status meaning. Hue ≈ 24°, clear of purple (≈ 259°), 21° from sun (≈ 45°) and 41° from rose (≈ 343°) |
 
 Illustration-only extras: `rose-500 #E8739A` (hot pink panel), `mint-500 #2F8F7A` (teal pulse line), `sun-500 #D9A514`.
 
@@ -709,19 +749,19 @@ Illustration-only extras: `rose-500 #E8739A` (hot pink panel), `mint-500 #2F8F7A
 
 ### 3.4 Product accent tokens
 
-| Token | Paramtune (Mint) | StillUp (Sun) | Handstamp (Lilac) | Rec Draw (Sky) |
-|-------|------------------|---------------|-------------------|----------------|
-| `data-product` | `paramtune` | `stillup` | `handstamp` | `draw` |
-| `accent` | `mint-400` `#4CC79A` (dark) · `mint-300` `#A8D8C2` (light) | `sun-400` `#E8B931` (dark) · `sun-300` `#F2C641` (light) | `lilac-400` `#B3A8EE` (dark) · `lilac-300` `#DCD7EE` (light) | `sky-400` `#5DB4EA` (dark) · `sky-300` `#B4DAF2` (light) |
-| `accent-fg` (text on accent) | `ink-950` / `deep-900` | `ink-950` / `deep-900` | `ink-950` / `deep-900` | `ink-950` / `deep-900` |
-| `accent-tile` | `mint-950` / `mint-100` | `sun-950` / `sun-100` | `lilac-950` / `lilac-100` | `sky-950` / `sky-100` |
-| `accent-text` (accent used as text) | `mint-400` / `mint-600` | `sun-400` / `sun-600` | `lilac-400` / `lilac-600` | `sky-400` / `sky-600` |
+| Token | Paramtune (Mint) | StillUp (Sun) | Handstamp (Lilac) | Rec Draw (Sky) | Valtr (Clay) |
+|-------|------------------|---------------|-------------------|----------------|--------------|
+| `data-product` | `paramtune` | `stillup` | `handstamp` | `draw` | `valtr` |
+| `accent` | `mint-400` `#4CC79A` (dark) · `mint-300` `#A8D8C2` (light) | `sun-400` `#E8B931` (dark) · `sun-300` `#F2C641` (light) | `lilac-400` `#B3A8EE` (dark) · `lilac-300` `#DCD7EE` (light) | `sky-400` `#5DB4EA` (dark) · `sky-300` `#B4DAF2` (light) | `clay-400` `#EE9A62` (dark) · `clay-300` `#F4C3A0` (light) |
+| `accent-fg` (text on accent) | `ink-950` / `deep-900` | `ink-950` / `deep-900` | `ink-950` / `deep-900` | `ink-950` / `deep-900` | `ink-950` / `deep-900` |
+| `accent-tile` | `mint-950` / `mint-100` | `sun-950` / `sun-100` | `lilac-950` / `lilac-100` | `sky-950` / `sky-100` | `clay-950` / `clay-100` |
+| `accent-text` (accent used as text) | `mint-400` / `mint-600` | `sun-400` / `sun-600` | `lilac-400` / `lilac-600` | `sky-400` / `sky-600` | `clay-400` / `clay-600` |
 
 ### 3.5 Color usage rules
 
 1. **Purple means action.** Primary buttons, links, focus, selected tabs, the title period. Nothing decorative is ever purple, except the purple period.
 2. **The accent means place.** Active nav item, product badge, required marker, illustration highlight. Use at most **one accent block per viewport** (the active nav), plus small marks.
-3. **Pastels mean status.** Sun, mint, rose and lilac map to meanings (§3.2). Never use rose for decoration, because users read it as failure. Sky is the exception: it has no status meaning and is only Rec Draw's accent, so never use it for status.
+3. **Pastels mean status.** Sun, mint, rose and lilac map to meanings (§3.2). Never use rose for decoration, because users read it as failure. Sky and Clay are the exceptions: they have no status meaning and are only Rec Draw's and Valtr's accents, so never use them for status.
 4. **Status needs a second signal.** Pair every status color with an icon or word (`↗ Healthy`, `↘ Failing`). Color alone is never enough.
 5. **Dark tiles are tints, not paint.** In dark mode, status tiles use the `-950` tint as background, cream for the number, `-400` for the icon. Full pastel blocks on black are not allowed.
 6. **Ratio guide (dark):** about 85% ink neutrals, 10% cream text, 3% purple, 2% pastels and accent.
@@ -1408,6 +1448,11 @@ Target: **WCAG 2.2 AA** in both themes.
 | `sky-400` on `ink-950` / `ink-900` (Rec Draw dark accent text) | 8.61 / 8.21 |
 | `sky-600` on `paper-100` / `paper-50` (Rec Draw light accent text) | 6.07 / 6.67 |
 | `cream` / `stone-400` on `sky-950` (Rec Draw dark tile number / caption) | 15.11 / 6.89 |
+| `deep-900` on `clay-300` (Valtr light tile, nav active) | 9.77 |
+| `ink-950` on `clay-400` (Valtr dark nav active, app icon) | 8.85 |
+| `clay-400` on `ink-950` / `ink-900` (Valtr dark accent text) | 8.85 / 8.43 |
+| `clay-600` on `paper-100` / `paper-50` (Valtr light accent text) | 5.76 / 6.33 |
+| `cream` / `stone-400` on `clay-950` (Valtr dark tile number / caption) | 15.22 / 6.94 |
 
 **Known limits:** `purple-400` (`#8E5FFF`) with white text is 4.0:1, so it's for hover backgrounds on large or bold labels only. Hairline borders (`ink-700`, `paper-400`) are decorative. Inputs use `border-input`, and focus states never rely on the border alone.
 
@@ -1429,7 +1474,7 @@ Target: **WCAG 2.2 AA** in both themes.
 Paste this into your global CSS (e.g. `app/globals.css`). Dark is the default (`:root`). Paper (light) applies via `data-theme="light"`. The product accent is set with `data-product`.
 
 ```html
-<html data-theme="dark" data-product="stillup">   <!-- or data-theme="light"; data-product="paramtune" | "handstamp" | "draw" -->
+<html data-theme="dark" data-product="stillup">   <!-- or data-theme="light"; data-product="paramtune" | "handstamp" | "valtr" | "draw" -->
 ```
 
 ```css
@@ -1498,6 +1543,7 @@ Paste this into your global CSS (e.g. `app/globals.css`). Dark is the default (`
   --color-rose-100: #FBE3E8; --color-rose-300: #F2C9D1; --color-rose-400: #F07A9C; --color-rose-500: #E8739A; --color-rose-600: #C42F52; --color-rose-950: #26121A;
   --color-lilac-100: #EEEBF7; --color-lilac-300: #DCD7EE; --color-lilac-400: #B3A8EE; --color-lilac-600: #5B4FA8; --color-lilac-950: #1A1828;
   --color-sky-100: #E2F0FA;   --color-sky-300: #B4DAF2;   --color-sky-400: #5DB4EA;   --color-sky-600: #1E5F8C;   --color-sky-950: #0E1C25;
+  --color-clay-100: #FBE6D6;  --color-clay-300: #F4C3A0;  --color-clay-400: #EE9A62;  --color-clay-600: #9A4515;  --color-clay-950: #26160C;
 
   /* Fonts */
   --font-display: "Archivo", "Arial Black", system-ui, sans-serif;
@@ -1703,6 +1749,19 @@ Paste this into your global CSS (e.g. `app/globals.css`). Dark is the default (`
   --accent-tile: var(--color-sky-100);
   --accent-text: var(--color-sky-600);
 }
+[data-product="valtr"] {
+  --accent: var(--color-clay-400);
+  --accent-fg: var(--color-ink-950);
+  --accent-tile: var(--color-clay-950);
+  --accent-text: var(--color-clay-400);
+}
+[data-theme="light"][data-product="valtr"],
+[data-theme="light"] [data-product="valtr"] {
+  --accent: var(--color-clay-300);
+  --accent-fg: var(--color-deep-900);
+  --accent-tile: var(--color-clay-100);
+  --accent-text: var(--color-clay-600);
+}
 
 /* ───────────────────────── 4. Semantic utilities ───────────────────────── */
 @theme inline {
@@ -1893,6 +1952,7 @@ Run this before shipping any screen:
 
 | Version | Date | Notes |
 |---------|------|-------|
+| 1.8.0 | 2026-10-11 | New product brand **Valtr** (secrets): Gauge + Keyhole + Spark mark (disc r 14.5 with a keyhole knock-out, head r 4.4 and a tapered slot; one spark tick at 45°), micro mark (r 20 disc, larger keyhole), `VALTR` wordmark (Archivo Expanded 700, `0.16em`), lockups, endorsed lockups, `clay-400` app icon and favicon (`logos/valtr-*`). New pastel **Clay** (`clay-100` `#FBE6D6`, `clay-300` `#F4C3A0`, `clay-400` `#EE9A62`, `clay-600` `#9A4515`, `clay-950` `#26160C`), Valtr's accent only, with no status meaning; it is the ramp Valtr and rec.farm already used. `data-product="valtr"` in §3.4 and §14, contrast pairs in §13.1 and the front matter. Logo sheets size themselves from the product count. |
 | 1.7.0 | 2026-10-10 | Handstamp gets its mark: Gauge + Check + Seal (disc r 11 with a 3.6u check knock-out pointing up the spark axis; a 3u rim at r 16.5 broken from 15° to 75°, with one spark tick in the break), micro mark (r 20 disc, 5.5u check), `HANDSTAMP` wordmark fixed at `0.16em`, lockups, endorsed lockups, `lilac-400` app icon and favicon. Logo sheets and the construction sheet now show five brands. No token changes. |
 | 1.6.0 | 2026-10-04 | Expanded §11.5 with canonical landing-page guidance based on Paramtune and documentation guidance based on StillUp: shared requirements, section structures, layout dimensions, responsive behavior, reading hierarchy, navigation, accessibility and product-specific choices. Extended the review checklist. No token or generated asset changes. |
 | 1.5.0 | 2026-10-03 | New product brand **Rec Draw** (private whiteboard): Gauge + Scribble + Spark mark (disc r 14, offset 1.5u down-left on the spark axis; scribble knock-out; three spark ticks round 45°), micro mark, `REC DRAW` wordmark (Archivo Expanded 700, `0.16em`), lockups, app icon and favicon (`logos/draw-*`); no endorsed lockup. New pastel **Sky** (`sky-100` `#E2F0FA`, `sky-300` `#B4DAF2`, `sky-400` `#5DB4EA`, `sky-600` `#1E5F8C`, `sky-950` `#0E1C25`) as Rec Draw's accent, with no status meaning; contrast pairs in §13.1 and the front matter. **Lilac** registered as **Handstamp**'s accent (it was listed as free). `data-product="handstamp"` and `"draw"` accent blocks in §14. Scribble added to the motif kit. Sheets extended. |
