@@ -1,6 +1,6 @@
-# Agent notes: REC brand
+# Agent notes: R.E.C. brand
 
-This repo is the source of truth for the REC design system (DESIGN.md) and its generated assets. Read README.md for the layout. Everything here is used by other projects and by OpenDesign, so a change isn't done until those copies are in sync.
+This repo is the source of truth for the R.E.C. design system (DESIGN.md) and its generated assets. Read README.md for the layout. Everything here is used by other projects and by OpenDesign, so a change isn't done until those copies are in sync.
 
 ## Rules
 
@@ -20,7 +20,7 @@ Use the `/brand-release` skill (`.claude/skills/brand-release/SKILL.md`), or fol
 3. Bump the version and add a changelog row.
 4. Run `python3 scripts/check.py`. The tokens and design.md lint checks must pass. For a token change, also run `git show vX.Y.Z:DESIGN.md > /tmp/prev-DESIGN.md && npx @google/design.md@0.4.0 diff /tmp/prev-DESIGN.md DESIGN.md` against the last tag (use a real file: with `<(...)` the CLI silently reads an empty file and reports every token as added) and put the token changes in the changelog row.
 5. Commit the source and the regenerated SVGs together, tag `vX.Y.Z`, then `git push --follow-tags`.
-6. **Sync OpenDesign.** The brand is "REC Design System": project `brand-rec-design-system-5bae95`, brand `rec-design-system-5bae95`. Both live under `~/Library/Application Support/Open Design/namespaces/release-stable/data/`.
+6. **Sync OpenDesign** (maintainer only: this step uses the owner's local OpenDesign install; contributors skip it). The brand is "REC Design System": project `brand-rec-design-system-5bae95`, brand `rec-design-system-5bae95`. Both live under `~/Library/Application Support/Open Design/namespaces/release-stable/data/`.
    - **Asset or build.py changes:** copy the changed files into `projects/brand-rec-design-system-5bae95/` at the same paths. Repo `DESIGN.md` goes to `context/input-DESIGN.md` in **both** that project folder and `brands/rec-design-system-5bae95/`. Re-imports read the brand-folder copy, so a stale copy there silently re-imports an old version. Copy with `cp`, not the MCP `write_file` tool: it needs the content inline, which is risky for big files like the 78 KB DESIGN.md. Then confirm OpenDesign sees the change with MCP `search_files`.
    - **Rule changes** (palette, type, logo rules, voice): OpenDesign also keeps derived copies (its own DESIGN.md, `brand.json`, generated tokens, kit pages). Its quick importer can't be trusted with our front matter: it reads any 3-character hex-like text (`500` in `{colors.purple-500}`) as a color. So after a re-import, run an AI refinement in the brand project (MCP `start_run`) telling it to regenerate those files from `context/input-DESIGN.md` only. Then check that its `brand.json` colors are all in our palette, and publish it with the daemon's `POST /api/brands/rec-design-system-5bae95/finalize` (body `{"projectId": "brand-rec-design-system-5bae95"}`; the port is whatever the `daemon-sidecar.mjs` process listens on). Finalize re-renders the kit pages and updates the design system that other OpenDesign projects use. Until then they keep the import's colors. Copy `logos/` and `fonts/` into the project before finalizing, since finalize copies them into the brand. Create or re-import brands in the OpenDesign app, never with `POST /api/brands`: the API call records no creator, and then the app refuses to publish, rename or delete the design system ("Something went wrong").
    - Rerun `scripts/check.py` until OpenDesign shows ✓.

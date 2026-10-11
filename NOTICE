@@ -1,0 +1,17 @@
+R.E.C. brand
+Copyright (c) 2026 Rodrigo Espinosa Curbelo
+
+Licensed under the MIT License (see LICENSE). This covers the code in this repository
+(build.py and scripts/).
+
+DESIGN.md and the other documentation are licensed under Creative Commons Attribution 4.0
+International (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/. Attribution:
+Rodrigo Espinosa Curbelo.
+
+Trademarks: the R.E.C., Paramtune, StillUp, Handstamp, Valtr and Rec Draw names and logos, and
+the files in logos/, sheets/ and illustrations/, are not covered by either license. The names
+and marks are trademarks of RECIAM SAS. See TRADEMARKS.md.
+
+Third-party fonts in fonts/: Archivo (Copyright 2020 The Archivo Project Authors), Figtree
+(Copyright 2022 The Figtree Project Authors) and Geist Mono (Copyright 2024 The Geist Project
+Authors), under the SIL Open Font License 1.1 (see fonts/OFL.txt).
